@@ -9,6 +9,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material-module';
 import { RouterModule } from '@angular/router';
+import { HourListComponent } from './hour-list/hour-list.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { RouterModule } from '@angular/router';
     AppComponent,
     StampTimeComponent,
     NavbarComponent,
+    HourListComponent,
   ],
   imports: [
     BrowserModule,

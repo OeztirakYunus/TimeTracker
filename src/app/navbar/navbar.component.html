@@ -10,7 +10,7 @@
       <button *ngIf="!this.isLoggedIn()" [routerLink]="'/login'" mat-button>
         <mat-icon>login</mat-icon>
       </button>
-      <button *ngIf="this.isLoggedIn()" (click)="logout()" [routerLink]="'/startsite'" mat-button>
+      <button *ngIf="this.isLoggedIn()" (click)="logout()" [routerLink]="'/stempeln'" mat-button>
         <mat-icon>logout</mat-icon>
       </button>
     </ng-container>
@@ -20,10 +20,8 @@
 <mat-drawer-container autosize>
   <mat-drawer #sidenav mode="side">
     <mat-nav-list>
-      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Startseite</a>
-      <a mat-list-item href="https://github.com/htl-leo-syp/rooman" (click)="sidenav.toggle()">Informationen</a>
-      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Admin</a>
-      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Digital-Door-Signs Admin</a>
+      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Stempeln</a>
+      <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">Stunden</a>
     </mat-nav-list>
   </mat-drawer>
   <ng-content></ng-content>
