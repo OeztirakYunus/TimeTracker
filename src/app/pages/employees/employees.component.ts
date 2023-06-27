@@ -72,7 +72,7 @@ export class AddEmployeeDialog {
     public dialogRef: MatDialogRef<AddEmployeeDialog>, private http: HttpService
   ) {}
 
-  data: UserToAdd = {firstName: "", lastName: "", email: "", password: ""}
+  data: UserToAdd = {firstName: "", lastName: "", email: "", password: "", phoneNumber: "", numberOfKids: 0, socialSecurityNumber: ""}
 
   onAddClick(): void {
     this.http.addUser(this.data);

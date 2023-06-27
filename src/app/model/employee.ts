@@ -3,6 +3,9 @@ export class Employee {
     public lastName : string = "";
     public employeeRole : string = "";
     public email : string = "";
+    public phoneNumber : string = "";
+    public socialSecurityNumber : string = "";
+    public numberOfKids : number = 0;
     public id : string = "";
     public companyId : string = "";
 }

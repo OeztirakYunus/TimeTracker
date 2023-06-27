@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+
+export interface MessageData {
+  title : string,
+  content: string
+}
+
 
 @Component({
   selector: 'app-message-dialog',
@@ -7,13 +13,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./message-dialog.component.css']
 })
 export class MessageDialogComponent {
-  constructor(public dialog: MatDialog){}
-  header = "";
-  message = "";
-
-  openDialog(title : string, message : string) {
-    this.header = title;
-    this.message = message;
-    this.dialog.open(MessageDialogComponent);
+  messageData : MessageData;
+  constructor(
+    public dialogRef: MatDialogRef<MessageDialogComponent>,@Inject(MAT_DIALOG_DATA) messageData : MessageData
+  )
+  {
+    this.messageData = messageData;
   }
 }

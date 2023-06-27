@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { JwtTokenService } from '../jwt/jwt-token.service';
 import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { MessageDialogComponent } from 'src/app/components/message-dialog/messag
 export class AuthService {
 
   private url = "https://localhost:5001/api/Auth/";
-  constructor(private httpClient: HttpClient, private router: Router, private cookieService: CookieService, private jwtService : JwtTokenService, private messageBox : MessageDialogComponent) { }
+  constructor(private httpClient: HttpClient, private router: Router, private cookieService: CookieService, private jwtService : JwtTokenService, private dialog: MatDialog) { }
 
   async login(email: string, password: string): Promise<boolean> {
     var path = 'login';
@@ -24,19 +25,21 @@ export class AuthService {
       this.cookieService.set('AuthToken', authToken);
       return true;
     } catch (error : any) {
-      this.messageBox.openDialog("Fehler beim Einloggen", error.error.message);
+      this.showErrorMessage(error.error.message);
       return false;
     }
   }
 
-  async register(companyName: string, firstName: string, lastName: string, email: string, password: string) {
+  async register(companyName: string, firstName: string, lastName: string, email: string, password: string, phoneNumber : string, numberOfKids : number, ssn : string) {
     var path = 'register';
-    var user = new User(companyName, firstName, lastName, email, password);
+    var user = new User(companyName, firstName, lastName, email, password, phoneNumber, numberOfKids, ssn);
 
     try {
       await this.httpClient.post<IAuthResponse>(this.url + path, user).toPromise();
+      return true;
     } catch (error : any) {
-     // this.snackBar.showSnackbar(error.error.message);
+     this.showErrorMessage(error.error.message);
+     return false;
     }
   }
 
@@ -44,7 +47,7 @@ export class AuthService {
     try {
       this.cookieService.delete('AuthToken');
     } catch (error : any) {
-   //   this.snackBar.showSnackbar(error.message);
+      this.showErrorMessage(error.error.message);
     }
   }
 
@@ -58,13 +61,21 @@ export class AuthService {
       var role = response === undefined ? "" : response.role;
       return role;
     } catch (error : any) {
-      this.messageBox.openDialog("Fehler beim Einloggen", error.error.message);
+      this.showErrorMessage(error.error.message);
       return "";
     }
   }
 
   public isAuthenticated(){
     return this.cookieService.check("AuthToken") && !this.jwtService.isTokenExpired(this.cookieService.get("AuthToken"));
+  }
+
+  private showErrorMessage(message: string){
+    this.dialog.open(MessageDialogComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {title: "Ein Fehler ist aufgetreten!", content: message}
+    });
   }
 }
 
@@ -74,6 +85,6 @@ export interface IAuthResponse {
 }
 
 class User {
-  public constructor(public companyName: string, public firstName: string, public lastName: string, public email: string, public password: string) {
+  public constructor(public companyName: string, public firstName: string, public lastName: string, public email: string, public password: string, public phoneNumber : string, public numberOfKids : number, public socialSecurityNumber : string) {
   }
 }

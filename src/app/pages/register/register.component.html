@@ -13,8 +13,20 @@
                 <input type="text" placeholder="Nachname eingeben" required [(ngModel)]="lastName" name="lastName">
               </div>
               <div class="input-box">
+                <span class="details">Sozialversicherungsnummer</span>
+                <input type="text" placeholder="SSN eingeben" required [(ngModel)]="ssn" name="ssn">
+              </div>
+              <div class="input-box">
+                <span class="details">Anzahl der Kinder</span>
+                <input type="number" placeholder="Anzahl der Kinder" required [(ngModel)]="numberOfKids" name="numberOfKids">
+              </div>
+              <div class="input-box">
                 <span class="details">Unternehmensname</span>
                 <input type="text" placeholder="Unternehmensname eingeben" required [(ngModel)]="companyName" name="companyName">
+              </div>
+              <div class="input-box">
+                <span class="details">Telefonnummer</span>
+                <input type="tel" placeholder="Telefonnummer eingeben" required [(ngModel)]="phoneNumber" name="phoneNumber">
               </div>
               <div class="input-box">
                 <span class="details">Email</span>
@@ -30,9 +42,10 @@
               </div>
             </div>
             <div class="button">
-              <input type="submit" value="Register" (click)="registerClicked()">
+              <input type="submit" value="Registrieren" (click)="registerClicked()">
             </div>
           </form>
+          <div class="signin-link">Du hast schon ein Account? <a routerLink="/login">Jetzt anmelden</a></div>
         </div>
       </div>
 </div>

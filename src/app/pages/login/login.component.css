@@ -98,8 +98,8 @@ form .row input::placeholder{
   background: linear-gradient(135deg, #F44336, #C62828);;
   cursor: pointer;
 }
-form .button input:hover{
-  background: linear-gradient(-135deg, black, #C62828);;
+.wrapper form .button input:hover{
+  background: linear-gradient(-135deg, #F44336, #C62828);
 }
 .wrapper form .signup-link{
   text-align: center;
@@ -110,6 +110,6 @@ form .button input:hover{
   color: #C62828;
   text-decoration: none;
 }
-form .signup-link a:hover{
+.wrapper form .signup-link a:hover{
   text-decoration: underline;
 }

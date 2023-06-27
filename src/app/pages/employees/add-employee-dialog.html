@@ -17,6 +17,21 @@
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
+    <mat-label>Telefonnummer</mat-label>
+    <input matInput [(ngModel)]="data.phoneNumber">
+  </mat-form-field>
+  <br>
+  <mat-form-field color="warn">
+    <mat-label>Sozialversicherungsnummer</mat-label>
+    <input matInput [(ngModel)]="data.socialSecurityNumber">
+  </mat-form-field>
+  <br>
+  <mat-form-field color="warn">
+    <mat-label>Anzahl der Kinder</mat-label>
+    <input matInput type="number" [(ngModel)]="data.numberOfKids">
+  </mat-form-field>
+  <br>
+  <mat-form-field color="warn">
     <mat-label>Password</mat-label>
     <input matInput [(ngModel)]="data.password">
   </mat-form-field>
