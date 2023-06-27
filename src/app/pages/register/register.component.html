@@ -1,0 +1,38 @@
+<div class="body">
+    <div class="container">
+        <div class="title">Registration</div>
+        <div class="content">
+          <form action="#">
+            <div class="user-details">
+              <div class="input-box">
+                <span class="details">Vorname</span>
+                <input type="text" placeholder="Vorname eingeben" required [(ngModel)]="firstName" name="firstName">
+              </div>
+              <div class="input-box">
+                <span class="details">Nachname</span>
+                <input type="text" placeholder="Nachname eingeben" required [(ngModel)]="lastName" name="lastName">
+              </div>
+              <div class="input-box">
+                <span class="details">Unternehmensname</span>
+                <input type="text" placeholder="Unternehmensname eingeben" required [(ngModel)]="companyName" name="companyName">
+              </div>
+              <div class="input-box">
+                <span class="details">Email</span>
+                <input type="email" placeholder="Email eingeben" required [(ngModel)]="email" name="email">
+              </div>
+              <div class="input-box">
+                <span class="details">Password</span>
+                <input type="password" placeholder="Password eingeben" required [(ngModel)]="password" name="password">
+              </div>
+              <div class="input-box">
+                <span class="details">Password bestätigen</span>
+                <input type="password" placeholder="Password bestätigen" required [(ngModel)]="passwordConfirm" name="passwordConfirm">
+              </div>
+            </div>
+            <div class="button">
+              <input type="submit" value="Register" (click)="registerClicked()">
+            </div>
+          </form>
+        </div>
+      </div>
+</div>

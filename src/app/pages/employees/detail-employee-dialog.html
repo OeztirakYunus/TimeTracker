@@ -1,0 +1,10 @@
+
+<h1 mat-dialog-title><b>Mitarbeiter Informationen</b></h1>
+<div mat-dialog-content>
+  <label><b>Vorname:</b> {{employee.firstName}}</label><br>
+  <label><b>Nachname:</b> {{employee.lastName}}</label><br>
+  <label><b>Email:</b> {{employee.email}}</label><br>
+  <label><b>Rolle:</b> {{employee.employeeRole}}</label><br>
+<div mat-dialog-actions>
+  <button color="warn" mat-raised-button (click)="onCloseClick()">Schließen</button>
+</div>

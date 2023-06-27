@@ -1,0 +1,29 @@
+<mat-toolbar color="warn">
+  <mat-toolbar-row>
+    <button mat-icon-button (click)="sidenav.toggle()" [hidden]="!this.isLoggedIn()">
+      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    </button>
+    <img class="logo" src='/assets/images/timelogLogo2.png'>
+    <!-- <img class="logo" src='/assets/images/Bild1.png'> -->
+    <span class="menu-spacer"></span>
+    <ng-container>
+      <button *ngIf="!this.isLoggedIn()" (click)="login()" [routerLink]="'/login'" mat-button>
+        <mat-icon>login</mat-icon>
+      </button>
+      <button *ngIf="this.isLoggedIn()" (click)="logout()" [routerLink]="'/login'" mat-button>
+        <mat-icon>logout</mat-icon>
+      </button>
+    </ng-container>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-drawer-container autosize>
+  <mat-drawer #sidenav mode="side">
+    <mat-nav-list>
+      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Stempeln</a>
+      <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">Stunden</a>
+      <a mat-list-item  [routerLink]="'/mitarbeiter'" (click)="sidenav.toggle()">Mitarbeiter</a>
+    </mat-nav-list>
+  </mat-drawer>
+  <ng-content></ng-content>
+</mat-drawer-container>

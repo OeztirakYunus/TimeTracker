@@ -1,0 +1,45 @@
+<div class="content">
+    <h1>Mitarbeiter</h1>
+
+    <button class="addButton" mat-mini-fab color="warn" (click)="openAdd()">
+        <mat-icon>add</mat-icon>
+    </button>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+    
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}} {{element.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let element"> {{(element.email)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="employeeRole">
+        <th mat-header-cell *matHeaderCellDef> Rolle </th>
+        <td mat-cell *matCellDef="let element"> {{(element.employeeRole)}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+        <td mat-cell *matCellDef="let element">
+          <button class="actionButton" mat-mini-fab color="warn" (click)="detailsEmployee(element)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button class="actionButton" mat-mini-fab color="warn" (click)="editEmployee(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" (click)="deleteEmployee(element)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
