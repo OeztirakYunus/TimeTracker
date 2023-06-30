@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class AuthService {
 
   private url = "https://localhost:5001/api/Auth/";
+  public role = "";
   constructor(private httpClient: HttpClient, private router: Router, private cookieService: CookieService, private jwtService : JwtTokenService, private dialog: MatDialog) { }
 
   async login(email: string, password: string): Promise<boolean> {
@@ -23,6 +24,8 @@ export class AuthService {
         { headers }).toPromise();
       var authToken = response === undefined ? "" : response.auth_token;
       this.cookieService.set('AuthToken', authToken);
+      var role = await this.getRole();
+      this.cookieService.set('UserRole', role);
       return true;
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
@@ -46,12 +49,13 @@ export class AuthService {
   async logout() {
     try {
       this.cookieService.delete('AuthToken');
+      this.cookieService.delete('UserRole');
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
     }
   }
 
-  async getRole(): Promise<string> {
+  private async getRole(): Promise<string> {
     var path = 'role';
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
 
@@ -67,6 +71,7 @@ export class AuthService {
   }
 
   public isAuthenticated(){
+    this.role = this.cookieService.check("UserRole") ? this.cookieService.get("UserRole") : "";
     return this.cookieService.check("AuthToken") && !this.jwtService.isTokenExpired(this.cookieService.get("AuthToken"));
   }
 

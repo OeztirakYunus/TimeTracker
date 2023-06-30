@@ -39,7 +39,7 @@ export class HttpService {
     try {   
       let workdayUn = await this.httpClient.get<WorkDay>(this.url + path, { headers }).toPromise();
       if(workdayUn != undefined){
-        workDay.date = this.parseDate(workdayUn.date);
+        workDay.startDate = this.parseDate(workdayUn.startDate);
         workDay.stamps = workdayUn.stamps;
 
         workDay.stamps.forEach(element => {
@@ -111,10 +111,8 @@ export class HttpService {
     }
   }
 
-  public async getWorkMonth(pickedDate : Date) : Promise<WorkMonth>{
-    var path = "WorkMonths/date/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
-
+  private async getWorkMonthWithPathAndHeaders(path : string, headers : HttpHeaders) : Promise<WorkMonth>
+  {
     let workMonth = new WorkMonth();
     try {   
       let workMonthUn = await this.httpClient.get<WorkMonth>(this.url + path, { headers }).toPromise();
@@ -123,17 +121,51 @@ export class HttpService {
         workMonth.workDays = workMonthUn.workDays;
 
         workMonth.workDays.forEach(element => {
-          element.date = this.parseDate(element.date);
-          element.stamps.forEach(i => {
+          element.forEach(t => {
+            t.startDate = this.parseDate(t.startDate);
+            t.endDate = this.parseDate(t.endDate);
+            t.stamps.forEach(i => {
             i.time = this.parseDate(i.time);
+          });
           });
         });
       }
     } catch (error) {
-      console.log(error)
     }
     finally{
       return workMonth;
+    }
+  } 
+
+  public async getWorkMonth(pickedDate : Date) : Promise<WorkMonth>{
+    var path = "WorkMonths/date/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
+    return workMonth;
+  }
+
+  public async getWorkMonthForEmployee(pickedDate : Date, employeeId : string) : Promise<WorkMonth>{
+    var path = "WorkMonths/date/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
+    return workMonth;
+  }
+
+  async getEmployeeById(employeeId : string) {
+    var path = "Auth/" + employeeId;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var employee = new Employee();
+    try {   
+      let employeeUn = await this.httpClient.get<Employee>(this.url + path, { headers }).toPromise();
+      employee = employeeUn === undefined ? new Employee() : employeeUn;
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      return employee;
     }
   }
 

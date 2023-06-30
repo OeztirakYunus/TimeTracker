@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { UserToAdd } from 'src/app/model/user-to-add';
 import { Employee } from 'src/app/model/employee';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employees',
@@ -17,7 +18,7 @@ export class EmployeesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'employeeRole', 'actions'];
   dataSource : Employee[] = [];
 
-  constructor(private httpService : HttpService, public dialog : MatDialog){}
+  constructor(private httpService : HttpService, public dialog : MatDialog, public router : Router){}
   
   async ngOnInit(){
     await this.getEmployees();
@@ -45,6 +46,10 @@ export class EmployeesComponent implements OnInit {
 
   editEmployee(employee : Employee){
     console.log(employee)
+  }
+  
+  viewHours(employee : Employee){
+    this.router.navigate(['/mitarbeiter/' + employee.id]);
   }
 
   detailsEmployee(employee : Employee){

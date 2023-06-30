@@ -19,6 +19,7 @@ import { AuthService } from './services/auth/auth.service';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
+import { HourListForEmployeeComponent } from './pages/hour-list-for-employee/hour-list-for-employee.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { MessageDialogComponent } from './components/message-dialog/message-dial
     EmployeesComponent,
     LoginComponent,
     RegisterComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    HourListForEmployeeComponent
     
   ],
   imports: [

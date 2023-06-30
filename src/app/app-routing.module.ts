@@ -6,6 +6,7 @@ import { EmployeesComponent } from './pages/employees/employees.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { AuthGuardService } from './services/auth/auth-guard.service';
+import { HourListForEmployeeComponent } from './pages/hour-list-for-employee/hour-list-for-employee.component';
 
 const routes: Routes = [
   { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path:'login', component:LoginComponent},
   { path:'stunden', component:HourListComponent, canActivate:[AuthGuardService]},
   { path:'mitarbeiter', component:EmployeesComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
+  { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path: '', redirectTo: '/stempeln', pathMatch: 'full'},
 ];
 

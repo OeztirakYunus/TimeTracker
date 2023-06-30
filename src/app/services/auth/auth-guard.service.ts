@@ -16,7 +16,7 @@ export class AuthGuardService implements CanActivate {
 
   async checkUserLogin(route: ActivatedRouteSnapshot, url: string): Promise<boolean> {
     if (this.auth.isAuthenticated()) {
-      const userRole = await this.auth.getRole();
+      const userRole = await this.auth.role;
       if (route.data['role'] && route.data['role'] !== userRole) {
         this.router.navigate(['/stempeln']);
         return false;

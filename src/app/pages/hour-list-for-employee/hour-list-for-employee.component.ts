@@ -1,17 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
+import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
 import { HttpService } from 'src/app/services/http/http.service';
 
 @Component({
-  selector: 'app-hour-list',
-  templateUrl: './hour-list.component.html',
-  styleUrls: ['./hour-list.component.css'],
+  selector: 'app-hour-list-for-employee',
+  templateUrl: './hour-list-for-employee.component.html',
+  styleUrls: ['./hour-list-for-employee.component.css']
 })
+export class HourListForEmployeeComponent implements OnInit {
 
-export class HourListComponent {
+  private employeeId : string = "";
+  public employee : Employee = new Employee();
+  constructor(private activatedroute:ActivatedRoute, private http : HttpService)
+  {
+    this.employeeId = activatedroute.snapshot.params["id"];
+    this.getWorkMonth();
+  }
+  
+  async ngOnInit(){
+    this.employee = await this.http.getEmployeeById(this.employeeId);
+  }
+
   displayedColumnsDay: string[] = ['typeOfStamp', 'time'];
   dataSourceDay : Stamp[] = [];
   days : WorkDay[] = [];
@@ -23,12 +37,8 @@ export class HourListComponent {
   public pickedDate : Date = new Date();
   workMonth = new WorkMonth();
 
-  constructor(private http : HttpService){
-    this.getWorkMonth();
-  }
-
   async getWorkMonth(){
-    this.workMonth = await this.http.getWorkMonth(this.pickedDate);
+    this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate, this.employeeId);
     var workDays = [] as WorkDay[];
     this.workMonth.workDays.forEach(element => {
       element.forEach(element2 => {

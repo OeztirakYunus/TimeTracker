@@ -8,10 +8,12 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class NavbarComponent {
 
+  userIsAdmin : boolean = false;
   public constructor(public auth : AuthService) {
   }
 
    isLoggedIn() {
+    this.userIsAdmin = this.auth.role == "Admin";
     return this.auth.isAuthenticated();
   }
 
@@ -19,7 +21,7 @@ export class NavbarComponent {
     //this.auth.loginWithRedirect();
   }
 
-  logout(){
-    this.auth.logout();
+  async logout(){
+    await this.auth.logout();
   }
 }
