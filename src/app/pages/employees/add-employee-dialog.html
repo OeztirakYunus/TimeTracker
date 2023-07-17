@@ -32,6 +32,14 @@
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
+    <mat-label>Select an option</mat-label>
+    <mat-select [(value)]="data.employeeRole">
+      <mat-option value="User">User</mat-option>
+      <mat-option value="Admin">Admin</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field color="warn">
     <mat-label>Password</mat-label>
     <input matInput [(ngModel)]="data.password">
   </mat-form-field>

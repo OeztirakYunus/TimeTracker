@@ -1,14 +1,35 @@
 import { Component } from '@angular/core';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
 import { HttpService } from 'src/app/services/http/http.service';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import * as moment from 'moment';
+
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @Component({
   selector: 'app-hour-list',
   templateUrl: './hour-list.component.html',
   styleUrls: ['./hour-list.component.css'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ]
 })
 
 export class HourListComponent {
@@ -20,7 +41,7 @@ export class HourListComponent {
   displayedColumnsMonth: string[] = ['day', 'startTime', 'endTime', 'breakHours', 'workedHours'];
   dataSourceMonth : WorkDay[] = [];
 
-  public pickedDate : Date = new Date();
+  public pickedDate : moment.Moment = moment();
   workMonth = new WorkMonth();
 
   constructor(private http : HttpService){
@@ -28,7 +49,7 @@ export class HourListComponent {
   }
 
   async getWorkMonth(){
-    this.workMonth = await this.http.getWorkMonth(this.pickedDate);
+    this.workMonth = await this.http.getWorkMonth(this.pickedDate.toDate());
     var workDays = [] as WorkDay[];
     this.workMonth.workDays.forEach(element => {
       element.forEach(element2 => {
@@ -37,7 +58,7 @@ export class HourListComponent {
     });
 
     this.dataSourceMonth = workDays;
-    this.days = this.workMonth.workDays[this.pickedDate.getDate() - 1];
+    this.days = this.workMonth.workDays[this.pickedDate.toDate().getDate() - 1];
     this.lengthOfPaginator = this.days.length; 
     var day = this.days[0]?.stamps;
     if(day != undefined){

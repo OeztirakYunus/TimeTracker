@@ -47,7 +47,6 @@ import { NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule } from 'ngx
     MaterialModule,
     HttpClientModule,
     NgxMaterialTimepickerModule
-
   ],
   providers: [HttpService, JwtTokenService, AuthService, MessageDialogComponent],
   bootstrap: [AppComponent]

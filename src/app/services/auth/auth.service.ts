@@ -72,7 +72,13 @@ export class AuthService {
 
   public isAuthenticated(){
     this.role = this.cookieService.check("UserRole") ? this.cookieService.get("UserRole") : "";
-    return this.cookieService.check("AuthToken") && !this.jwtService.isTokenExpired(this.cookieService.get("AuthToken"));
+    var isAuth =  this.cookieService.check("AuthToken") && !this.jwtService.isTokenExpired(this.cookieService.get("AuthToken"));
+
+    if(!isAuth){
+      this.logout();
+    }
+
+    return isAuth;
   }
 
   private showErrorMessage(message: string){

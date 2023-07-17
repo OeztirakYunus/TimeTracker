@@ -6,4 +6,5 @@ export interface UserToAdd {
     phoneNumber: string;
     numberOfKids: number;
     socialSecurityNumber: string;
+    employeeRole: string;
 }

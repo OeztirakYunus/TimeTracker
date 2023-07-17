@@ -9,6 +9,7 @@ import { UserToAdd } from 'src/app/model/user-to-add';
 import { Employee } from 'src/app/model/employee';
 import { Router } from '@angular/router';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-employees',
@@ -35,8 +36,8 @@ export class EmployeesComponent implements OnInit {
       width: '50%',
     });
 
-    dialogRef.afterClosed().subscribe(async () => {
-      await this.getEmployees();
+    dialogRef.afterClosed().subscribe(() => {
+      this.getEmployees();
     })
   }
 
@@ -71,14 +72,14 @@ export class EmployeesComponent implements OnInit {
   templateUrl: 'add-employee-dialog.html',
   styleUrls: ['add-employee-dialog.css'],
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule],
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatSelectModule],
 })
 export class AddEmployeeDialog {
   constructor(
     public dialogRef: MatDialogRef<AddEmployeeDialog>, private http: HttpService
   ) {}
 
-  data: UserToAdd = {firstName: "", lastName: "", email: "", password: "", phoneNumber: "", numberOfKids: 0, socialSecurityNumber: ""}
+  data: UserToAdd = {firstName: "", lastName: "", email: "", password: "", phoneNumber: "", numberOfKids: 0, employeeRole: "User", socialSecurityNumber: ""}
 
   onAddClick(): void {
     this.http.addUser(this.data);

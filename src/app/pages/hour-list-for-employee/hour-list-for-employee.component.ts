@@ -1,16 +1,36 @@
 import { Component, OnInit } from '@angular/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
 import { HttpService } from 'src/app/services/http/http.service';
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
+
 @Component({
   selector: 'app-hour-list-for-employee',
   templateUrl: './hour-list-for-employee.component.html',
-  styleUrls: ['./hour-list-for-employee.component.css']
+  styleUrls: ['./hour-list-for-employee.component.css'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ]
 })
 export class HourListForEmployeeComponent implements OnInit {
 
@@ -34,7 +54,7 @@ export class HourListForEmployeeComponent implements OnInit {
   displayedColumnsMonth: string[] = ['day', 'startTime', 'endTime', 'breakHours', 'workedHours'];
   dataSourceMonth : WorkDay[] = [];
 
-  public pickedDate : Date = new Date();
+  public pickedDate : moment.Moment = moment();
   workMonth = new WorkMonth();
 
   async getAsPdf(){
@@ -42,7 +62,7 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   async getWorkMonth(){
-    this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate, this.employeeId);
+    this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate.toDate(), this.employeeId);
     var workDays = [] as WorkDay[];
     this.workMonth.workDays.forEach(element => {
       element.forEach(element2 => {
@@ -50,7 +70,7 @@ export class HourListForEmployeeComponent implements OnInit {
       });
     });
     this.dataSourceMonth = workDays;
-    this.days = this.workMonth.workDays[this.pickedDate.getDate() - 1];
+    this.days = this.workMonth.workDays[this.pickedDate.toDate().getDate() - 1];
     this.lengthOfPaginator = this.days.length; 
     var day = this.days[0]?.stamps;
     if(day != undefined){
@@ -100,7 +120,9 @@ export class HourListForEmployeeComponent implements OnInit {
     var hours = element.time.getHours();
     var minutes = element.time.getMinutes();
     var seconds = element.time.getSeconds();
-    element.time = event["value"];
+
+    var dateMoment = event["value"] as moment.Moment;
+    element.time = dateMoment.toDate();
     element.time.setHours(hours);
     element.time.setMinutes(minutes);
     element.time.setSeconds(seconds);
