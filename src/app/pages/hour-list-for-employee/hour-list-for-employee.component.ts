@@ -26,16 +26,20 @@ export class HourListForEmployeeComponent implements OnInit {
     this.employee = await this.http.getEmployeeById(this.employeeId);
   }
 
-  displayedColumnsDay: string[] = ['typeOfStamp', 'time'];
+  displayedColumnsDay: string[] = ['typeOfStamp', 'time', 'actions'];
   dataSourceDay : Stamp[] = [];
   days : WorkDay[] = [];
   lengthOfPaginator : number = 0;
 
-  displayedColumnsMonth: string[] = ['day', 'workedHours'];
+  displayedColumnsMonth: string[] = ['day', 'startTime', 'endTime', 'breakHours', 'workedHours'];
   dataSourceMonth : WorkDay[] = [];
 
   public pickedDate : Date = new Date();
   workMonth = new WorkMonth();
+
+  async getAsPdf(){
+    await this.http.getAsPdf(this.workMonth);
+  }
 
   async getWorkMonth(){
     this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate, this.employeeId);
@@ -78,5 +82,38 @@ export class HourListForEmployeeComponent implements OnInit {
 
   public getTime(date : Date){
     return date.toLocaleTimeString();
+  }
+
+  getValueForTimePicker(element : Stamp){
+    var timeWithSeconds = this.getTime(element.time);
+    var timeSplitted = timeWithSeconds.split(":");
+    var time = timeSplitted[0] + ":" + timeSplitted[1];
+    return time;
+  }
+
+  getDateForElement(element : Stamp)
+  {
+    return element.time;
+  }
+
+  dateChanged(event : any, element : Stamp){
+    var hours = element.time.getHours();
+    var minutes = element.time.getMinutes();
+    var seconds = element.time.getSeconds();
+    element.time = event["value"];
+    element.time.setHours(hours);
+    element.time.setMinutes(minutes);
+    element.time.setSeconds(seconds);
+  }
+
+  timeChanged(event : string, element : Stamp){
+    var time = event.split(":");
+    element.time.setHours(+time[0])
+    element.time.setMinutes(+time[1])
+  }
+
+  async saveChanges(element : Stamp){
+    await this.http.updateStamp(element);
+    await this.getWorkMonth();
   }
 }

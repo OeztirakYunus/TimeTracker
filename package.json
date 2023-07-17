@@ -22,8 +22,12 @@
     "@angular/router": "^16.0.0",
     "@auth0/angular-jwt": "^5.1.2",
     "@auth0/auth0-angular": "^2.1.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "luxon": "^3.3.0",
     "material-design-icons": "^3.0.1",
     "ngx-cookie-service": "^16.0.0",
+    "ngx-material-timepicker": "^13.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

@@ -20,6 +20,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
 import { HourListForEmployeeComponent } from './pages/hour-list-for-employee/hour-list-for-employee.component';
+import { NgxMaterialTimepicker24HoursFaceComponent } from 'ngx-material-timepicker/src/app/material-timepicker/components/timepicker-24-hours-face/ngx-material-timepicker-24-hours-face.component';
+import { NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 
 @NgModule({
@@ -44,7 +46,7 @@ import { HourListForEmployeeComponent } from './pages/hour-list-for-employee/hou
     BrowserModule,
     MaterialModule,
     HttpClientModule,
-    
+    NgxMaterialTimepickerModule
 
   ],
   providers: [HttpService, JwtTokenService, AuthService, MessageDialogComponent],

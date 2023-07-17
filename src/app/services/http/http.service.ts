@@ -5,6 +5,7 @@ import { WorkDay } from 'src/app/model/work-day';
 import { IAuthResponse } from '../auth/auth.service';
 import { WorkMonth } from 'src/app/model/work-month';
 import { Employee } from 'src/app/model/employee';
+import { Stamp } from 'src/app/model/stamp';
 
 
 export interface UserToAdd {
@@ -119,6 +120,7 @@ export class HttpService {
       if(workMonthUn != undefined){
         workMonth.date = this.parseDate(workMonthUn.date);
         workMonth.workDays = workMonthUn.workDays;
+        workMonth.id = workMonthUn.id;
 
         workMonth.workDays.forEach(element => {
           element.forEach(t => {
@@ -148,7 +150,6 @@ export class HttpService {
   public async getWorkMonthForEmployee(pickedDate : Date, employeeId : string) : Promise<WorkMonth>{
     var path = "WorkMonths/date/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
-
     var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
     return workMonth;
   }
@@ -204,6 +205,37 @@ export class HttpService {
     }
     finally{
       return employees;
+    }
+  }
+
+  public async updateStamp(stamp : Stamp) : Promise<void>{
+    var path = "Stamps/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    console.log(stamp);
+    try {   
+      await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  public async getAsPdf(workMonth : WorkMonth) : Promise<Blob>{
+    var path = "WorkMonths/createPdf/" + workMonth.id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    headers = headers.set('Accept', 'application/pdf');
+    var pdfData = new Blob();
+    try {   
+      var response = await this.httpClient.get<Blob>(this.url + path, { headers, responseType: 'blob' as 'json' }).toPromise();
+      if(response != undefined){
+        var fileURL = URL.createObjectURL(response);
+        window.open(fileURL, '_blank');
+        return response;
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    finally{
+      return pdfData;
     }
   }
 }

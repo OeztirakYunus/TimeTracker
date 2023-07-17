@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserToAdd } from 'src/app/model/user-to-add';
 import { Employee } from 'src/app/model/employee';
 import { Router } from '@angular/router';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @Component({
   selector: 'app-employees',

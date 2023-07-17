@@ -17,7 +17,7 @@ export class HourListComponent {
   days : WorkDay[] = [];
   lengthOfPaginator : number = 0;
 
-  displayedColumnsMonth: string[] = ['day', 'workedHours'];
+  displayedColumnsMonth: string[] = ['day', 'startTime', 'endTime', 'breakHours', 'workedHours'];
   dataSourceMonth : WorkDay[] = [];
 
   public pickedDate : Date = new Date();
@@ -35,6 +35,7 @@ export class HourListComponent {
         workDays.push(element2);
       });
     });
+
     this.dataSourceMonth = workDays;
     this.days = this.workMonth.workDays[this.pickedDate.getDate() - 1];
     this.lengthOfPaginator = this.days.length; 
