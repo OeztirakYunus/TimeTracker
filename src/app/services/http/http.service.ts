@@ -6,6 +6,9 @@ import { IAuthResponse } from '../auth/auth.service';
 import { WorkMonth } from 'src/app/model/work-month';
 import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
+import { EmployeeEdit } from 'src/app/model/employee-edit';
+import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 export interface UserToAdd {
@@ -22,14 +25,8 @@ export class HttpService {
   private httpClient: HttpClient;
   private url : string = "https://localhost:5001/api/";
 
-  constructor(http: HttpClient, private cookieService : CookieService) {
+  constructor(http: HttpClient, private cookieService : CookieService, private dialog: MatDialog) {
     this.httpClient = http;
-  }
-
-  public getAuthTest(){
-    var path = "Companies/auth-test";
-    this.httpClient.get(this.url + path).subscribe(result => console.log(result));
-  
   }
 
   public async getWorkDay() : Promise<WorkDay>{
@@ -49,8 +46,8 @@ export class HttpService {
 
         workDay.workedHours = workdayUn.workedHours;
       }
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return workDay;
@@ -80,8 +77,8 @@ export class HttpService {
     
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
   }
 
@@ -91,8 +88,8 @@ export class HttpService {
     
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
   }
 
@@ -104,8 +101,8 @@ export class HttpService {
     try {   
       let cN = await this.httpClient.get<string>(this.url + path, { headers }).toPromise();
       companyName = cN as string;
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return companyName;
@@ -122,17 +119,24 @@ export class HttpService {
         workMonth.workDays = workMonthUn.workDays;
         workMonth.id = workMonthUn.id;
 
-        workMonth.workDays.forEach(element => {
-          element.forEach(t => {
-            t.startDate = this.parseDate(t.startDate);
-            t.endDate = this.parseDate(t.endDate);
-            t.stamps.forEach(i => {
-            i.time = this.parseDate(i.time);
+        if(workMonth.workDays != null){
+          workMonth.workDays.forEach(element => {
+            element.forEach(t => {
+              t.startDate = this.parseDate(t.startDate);
+              t.endDate = this.parseDate(t.endDate);
+              t.stamps.forEach(i => {
+              i.time = this.parseDate(i.time);
+            });
+            });
           });
-          });
-        });
+        }
+        else{
+          workMonth.workDays = [];
+        }
+       
       }
-    } catch (error) {
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return workMonth;
@@ -162,8 +166,8 @@ export class HttpService {
     try {   
       let employeeUn = await this.httpClient.get<Employee>(this.url + path, { headers }).toPromise();
       employee = employeeUn === undefined ? new Employee() : employeeUn;
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return employee;
@@ -177,7 +181,7 @@ export class HttpService {
     try {
       await this.httpClient.post<IAuthResponse>(this.url + path, user, {headers}).toPromise();
     } catch (error : any) {
-      console.log(error)
+      this.showErrorMessage(error.error.message);
     }
   }
 
@@ -188,7 +192,7 @@ export class HttpService {
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
     } catch (error : any) {
-      console.log(error)
+      this.showErrorMessage(error.error.message);
     }
   }
 
@@ -200,8 +204,8 @@ export class HttpService {
     try {   
       let employeeUn = await this.httpClient.get<Employee[]>(this.url + path, { headers }).toPromise();
       employees = employeeUn === undefined ? [] : employeeUn;
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return employees;
@@ -211,11 +215,35 @@ export class HttpService {
   public async updateStamp(stamp : Stamp) : Promise<void>{
     var path = "Stamps/";
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
-    console.log(stamp);
     try {   
       await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  public async updateEmployee(employee : EmployeeEdit) : Promise<void>{
+    var path = "Auth/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    try {   
+      await this.httpClient.put<IAuthResponse>(this.url + path, employee,{ headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  public async getEmployeeEdit(id : string): Promise<EmployeeEdit> {
+    var path = 'Auth/' + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {
+      var response = await this.httpClient.get<EmployeeEdit>(this.url + path,
+        { headers }).toPromise();
+      var employee = response === undefined ? new EmployeeEdit() : response;
+      return employee;
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+      return new EmployeeEdit();
     }
   }
 
@@ -231,11 +259,19 @@ export class HttpService {
         window.open(fileURL, '_blank');
         return response;
       }
-    } catch (error) {
-      console.log(error)
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
     finally{
       return pdfData;
     }
+  }
+
+  private showErrorMessage(message: string){
+    this.dialog.open(MessageDialogComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {title: "Ein Fehler ist aufgetreten!", content: message}
+    });
   }
 }

@@ -1,50 +1,45 @@
 
-<h1 mat-dialog-title><b>Mitarbeiter hinzufügen</b></h1>
-<div mat-dialog-content>
+<div class="content">
+  <h1><b>Mitarbeiter bearbeiten</b></h1>
   <mat-form-field class="input" color="warn">
     <mat-label>Vorname</mat-label>
-    <input matInput [(ngModel)]="data.firstName">
+    <input matInput [(ngModel)]="employee.firstName">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Nachname</mat-label>
-    <input matInput [(ngModel)]="data.lastName">
+    <input matInput [(ngModel)]="employee.lastName">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Email</mat-label>
-    <input matInput [(ngModel)]="data.email">
+    <input matInput [(ngModel)]="employee.email">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Telefonnummer</mat-label>
-    <input matInput [(ngModel)]="data.phoneNumber">
+    <input matInput [(ngModel)]="employee.phoneNumber">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Sozialversicherungsnummer</mat-label>
-    <input matInput [(ngModel)]="data.socialSecurityNumber">
+    <input matInput [(ngModel)]="employee.socialSecurityNumber">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Anzahl der Kinder</mat-label>
-    <input matInput type="number" [(ngModel)]="data.numberOfKids">
+    <input matInput type="number" [(ngModel)]="employee.numberOfKids">
   </mat-form-field>
   <br>
   <mat-form-field color="warn">
     <mat-label>Select an option</mat-label>
-    <mat-select [(value)]="data.employeeRole">
+    <mat-select [(ngModel)]="employee.employeeRole">
       <mat-option value="User">User</mat-option>
       <mat-option value="Admin">Admin</mat-option>
     </mat-select>
   </mat-form-field>
   <br>
-  <mat-form-field color="warn">
-    <mat-label>Password</mat-label>
-    <input matInput [(ngModel)]="data.password">
-  </mat-form-field>
+  <div mat-dialog-actions>
+  <button color="warn" mat-raised-button (click)="saveBtnClicked()">Speichern</button>
+  </div>
 </div>
-<div mat-dialog-actions>
-  <button color="warn" mat-raised-button (click)="onAddClick()">Hinzufügen</button>
-</div>
-

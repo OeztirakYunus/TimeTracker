@@ -31,14 +31,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   openAdd(){
-    var dialogRef= this.dialog.open(AddEmployeeDialog, {
-      height: '50%',
-      width: '50%',
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.getEmployees();
-    })
+    this.router.navigate(['/mitarbeiter/add']);
   }
 
   async deleteEmployee(employee : Employee){
@@ -47,7 +40,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   editEmployee(employee : Employee){
-    console.log(employee)
+    this.router.navigate(['/mitarbeiter/edit/' + employee.id]);
   }
   
   viewHours(employee : Employee){
@@ -68,26 +61,6 @@ export class EmployeesComponent implements OnInit {
 }
 
 @Component({
-  selector: 'add-employee-dialog',
-  templateUrl: 'add-employee-dialog.html',
-  styleUrls: ['add-employee-dialog.css'],
-  standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatSelectModule],
-})
-export class AddEmployeeDialog {
-  constructor(
-    public dialogRef: MatDialogRef<AddEmployeeDialog>, private http: HttpService
-  ) {}
-
-  data: UserToAdd = {firstName: "", lastName: "", email: "", password: "", phoneNumber: "", numberOfKids: 0, employeeRole: "User", socialSecurityNumber: ""}
-
-  onAddClick(): void {
-    this.http.addUser(this.data);
-    this.dialogRef.close();
-  }
-}
-
-@Component({
   selector: 'detail-employee-dialog',
   templateUrl: 'detail-employee-dialog.html',
   styleUrls: ['detail-employee-dialog.css'],
@@ -97,7 +70,7 @@ export class AddEmployeeDialog {
 export class DetailEmployeeDialog {
   employee : Employee;
   constructor(
-    public dialogRef: MatDialogRef<AddEmployeeDialog>, private http: HttpService, @Inject(MAT_DIALOG_DATA) data : Employee
+    public dialogRef: MatDialogRef<DetailEmployeeDialog>, private http: HttpService, @Inject(MAT_DIALOG_DATA) data : Employee
   )
   {
     this.employee = data;

@@ -22,6 +22,10 @@ import { MessageDialogComponent } from './components/message-dialog/message-dial
 import { HourListForEmployeeComponent } from './pages/hour-list-for-employee/hour-list-for-employee.component';
 import { NgxMaterialTimepicker24HoursFaceComponent } from 'ngx-material-timepicker/src/app/material-timepicker/components/timepicker-24-hours-face/ngx-material-timepicker-24-hours-face.component';
 import { NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { EditEmployeeComponent } from './pages/employees/edit-employee/edit-employee.component';
+import { AddEmployeeComponent } from './pages/employees/add-employee/add-employee.component';
+import { VacationRequestComponent } from './pages/vacation-request/vacation-request.component';
+import { VacationsComponent } from './pages/vacations/vacations.component';
 
 
 @NgModule({
@@ -34,7 +38,11 @@ import { NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule } from 'ngx
     LoginComponent,
     RegisterComponent,
     MessageDialogComponent,
-    HourListForEmployeeComponent
+    HourListForEmployeeComponent,
+    EditEmployeeComponent,
+    AddEmployeeComponent,
+    VacationRequestComponent,
+    VacationsComponent
     
   ],
   imports: [

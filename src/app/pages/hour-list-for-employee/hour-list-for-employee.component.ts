@@ -64,15 +64,20 @@ export class HourListForEmployeeComponent implements OnInit {
   async getWorkMonth(){
     this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate.toDate(), this.employeeId);
     var workDays = [] as WorkDay[];
-    this.workMonth.workDays.forEach(element => {
-      element.forEach(element2 => {
-        workDays.push(element2);
+    var day = undefined;
+    if(this.workMonth.workDays.length > 0){
+      this.workMonth.workDays.forEach(element => {
+        element.forEach(element2 => {
+          workDays.push(element2);
+        });
       });
-    });
+
+      this.days = this.workMonth.workDays[this.pickedDate.toDate().getDate() - 1];
+      this.lengthOfPaginator = this.days.length; 
+      day = this.days[0]?.stamps;
+    }
     this.dataSourceMonth = workDays;
-    this.days = this.workMonth.workDays[this.pickedDate.toDate().getDate() - 1];
-    this.lengthOfPaginator = this.days.length; 
-    var day = this.days[0]?.stamps;
+    
     if(day != undefined){
       this.dataSourceDay = day;
     }

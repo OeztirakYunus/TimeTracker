@@ -5,6 +5,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { JwtTokenService } from '../jwt/jwt-token.service';
 import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Employee } from 'src/app/model/employee';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,22 @@ export class AuthService {
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
       return "";
+    }
+  }
+
+  public async getLoggedInUser() : Promise<Employee>{
+    var path = "authenticatedUser";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    let employee = new Employee;
+    try {   
+      let employeeUn = await this.httpClient.get<Employee>(this.url + path, { headers }).toPromise();
+      employee = employeeUn === undefined ? new Employee : employeeUn;
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+    finally{
+      return employee;
     }
   }
 
