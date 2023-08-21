@@ -26,6 +26,7 @@ import { EditEmployeeComponent } from './pages/employees/edit-employee/edit-empl
 import { AddEmployeeComponent } from './pages/employees/add-employee/add-employee.component';
 import { VacationRequestComponent } from './pages/vacation-request/vacation-request.component';
 import { VacationsComponent } from './pages/vacations/vacations.component';
+import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { VacationsComponent } from './pages/vacations/vacations.component';
     EditEmployeeComponent,
     AddEmployeeComponent,
     VacationRequestComponent,
-    VacationsComponent
+    VacationsComponent,
+    VacationRequestAdminComponent
     
   ],
   imports: [

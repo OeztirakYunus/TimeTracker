@@ -9,6 +9,8 @@ import { Stamp } from 'src/app/model/stamp';
 import { EmployeeEdit } from 'src/app/model/employee-edit';
 import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Vacation } from 'src/app/model/vacation';
+import { VacationAdd } from 'src/app/model/vacation-add';
 
 
 export interface UserToAdd {
@@ -264,6 +266,85 @@ export class HttpService {
     }
     finally{
       return pdfData;
+    }
+  }
+
+  async getVacations() {
+    var path = "Vacations/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var vacations = [] as Vacation[];
+    try {   
+      let vacationsUn = await this.httpClient.get<Vacation[]>(this.url + path, { headers }).toPromise();
+      vacations = vacationsUn === undefined ? [] : vacationsUn;
+      vacations.forEach(element => {
+        element.startDate = this.parseDate(element.startDate);
+        element.endDate = this.parseDate(element.endDate);
+        element.dateOfRequest = this.parseDate(element.dateOfRequest);
+      });
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+    finally{
+      return vacations;
+    }
+  }
+
+  async getAllVacations() {
+    var path = "Vacations/forCompany/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var vacations = [] as Vacation[];
+    try {   
+      let vacationsUn = await this.httpClient.get<Vacation[]>(this.url + path, { headers }).toPromise();
+      vacations = vacationsUn === undefined ? [] : vacationsUn;
+      vacations.forEach(element => {
+        element.startDate = this.parseDate(element.startDate);
+        element.endDate = this.parseDate(element.endDate);
+        element.dateOfRequest = this.parseDate(element.dateOfRequest);
+      });
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+    finally{
+      return vacations;
+    }
+  }
+
+  async addVacation(vacation : VacationAdd) {
+    var path = 'Vacations/';
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    headers = headers.set('Accept', 'application/json');
+    vacation.status = "0";
+
+    try {
+      await this.httpClient.post<IAuthResponse>(this.url + path, vacation, {headers}).toPromise();
+    } catch (error : any) {
+      console.log(error);
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+
+  async confirmVacation(id : string) {
+    var path = "Vacations/confirm/" + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  async rejectVacation(id : string) {
+    var path = "Vacations/reject/" + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
     }
   }
 

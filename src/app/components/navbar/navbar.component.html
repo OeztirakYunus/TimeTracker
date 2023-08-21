@@ -32,4 +32,5 @@
 <mat-menu #vacations="matMenu">
   <button mat-menu-item [routerLink]="'/urlaube'" (click)="sidenav.toggle()">Meine Urlaube</button>
   <button mat-menu-item [routerLink]="'/urlaube/antrag'" (click)="sidenav.toggle()">Urlaubsantrag</button>
+  <button mat-menu-item *ngIf="userIsAdmin" [routerLink]="'/urlaube/antrag/admin'" (click)="sidenav.toggle()">Urlaubsanträge | Admin</button>
 </mat-menu>

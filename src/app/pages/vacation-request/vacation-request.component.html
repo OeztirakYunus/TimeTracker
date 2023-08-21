@@ -13,5 +13,5 @@
     </mat-form-field>
     <mat-divider></mat-divider>
     <p>Ich, <b>{{nameOfEmployee}}</b>, beantrage Urlaub von <b>{{getDateAsString(startDate)}}</b> bis <b>{{getDateAsString(endDate)}}</b>. Das entsprechen <b>{{getVacationDaysAsString()}}</b> Urlaubstage.</p>
-    <button mat-raised-button color="warn">Bestätigen</button>
+    <button mat-raised-button color="warn" (click)="addClicked()">Bestätigen</button>
 </div>

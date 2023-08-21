@@ -11,6 +11,7 @@ import { EditEmployeeComponent } from './pages/employees/edit-employee/edit-empl
 import { AddEmployeeComponent } from './pages/employees/add-employee/add-employee.component';
 import { VacationRequestComponent } from './pages/vacation-request/vacation-request.component';
 import { VacationsComponent } from './pages/vacations/vacations.component';
+import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
 
 const routes: Routes = [
   { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path:'stunden', component:HourListComponent, canActivate:[AuthGuardService]},
   { path:'urlaube', component:VacationsComponent, canActivate:[AuthGuardService]},
   { path:'urlaube/antrag', component:VacationRequestComponent, canActivate:[AuthGuardService]},
+  { path:'urlaube/antrag/admin', component:VacationRequestAdminComponent, canActivate:[AuthGuardService],  data: {role: "Admin"}},
   { path:'mitarbeiter', component:EmployeesComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/add', component:AddEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},

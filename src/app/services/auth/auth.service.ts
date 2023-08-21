@@ -56,19 +56,22 @@ export class AuthService {
     }
   }
 
-  private async getRole(): Promise<string> {
-    var path = 'role';
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
-
-    try {
-      var response = await this.httpClient.get<IAuthResponse>(this.url + path,
-        { headers }).toPromise();
-      var role = response === undefined ? "" : response.role;
-      return role;
-    } catch (error : any) {
-      this.showErrorMessage(error.error.message);
-      return "";
+  private async getRole(): Promise<string> {  
+    if(this.isAuthenticated()){
+      var path = 'role';
+      var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+      try {
+        var response = await this.httpClient.get<IAuthResponse>(this.url + path,
+          { headers }).toPromise();
+        var role = response === undefined ? "" : response.role;
+        return role;
+      } catch (error : any) {
+        this.showErrorMessage(error.error.message);
+        return "";
+      }
     }
+
+    return "User";
   }
 
   public async getLoggedInUser() : Promise<Employee>{

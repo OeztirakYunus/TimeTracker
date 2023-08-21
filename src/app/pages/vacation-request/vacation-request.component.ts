@@ -3,6 +3,8 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import * as moment from 'moment';
 import { Employee } from 'src/app/model/employee';
+import { Vacation } from 'src/app/model/vacation';
+import { VacationAdd } from 'src/app/model/vacation-add';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpService } from 'src/app/services/http/http.service';
 
@@ -55,7 +57,14 @@ export class VacationRequestComponent implements OnInit{
 
     var diff = Math.abs(this.endDate.toDate().getTime() - this.startDate.toDate().getTime());
     var diffDays = Math.ceil(diff / (1000 * 3600 * 24)); 
-    diffDays += 1;
+    diffDays = diffDays < 1 ? 1 : diffDays;
     return diffDays.toString();
+  }
+
+  async addClicked(){
+    let vacation = new VacationAdd();
+    vacation.startDate = this.startDate.toDate();
+    vacation.endDate = this.endDate.toDate();
+    await this.http.addVacation(vacation);
   }
 }

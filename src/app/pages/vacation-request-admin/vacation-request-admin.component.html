@@ -1,12 +1,60 @@
 <div class="content">
-    <h1>Meine Urlaube</h1>
+    <h1>Urlaube</h1>
     <mat-tab-group color="warn">
+        <mat-tab label="Neue Anträge">
+            <table mat-table [dataSource]="dataSourceInProgress" class="mat-elevation-z8">
+                <!--- Note that these columns can be defined in any order.
+                      The actual rendered columns are set as a property on the row definition" -->
+                
+                <!-- Type Column -->
+                <ng-container matColumnDef="nameOfEmployee">
+                    <th mat-header-cell *matHeaderCellDef> Antragssteller </th>
+                    <td mat-cell *matCellDef="let element"> {{element.employee.lastName}} {{element.employee.firstName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateOfRequest">
+                  <th mat-header-cell *matHeaderCellDef> Antragsdatum </th>
+                  <td mat-cell *matCellDef="let element"> {{element.dateOfRequest.toLocaleDateString()}} </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="startDate">
+                  <th mat-header-cell *matHeaderCellDef> Urlaubsbeginn </th>
+                  <td mat-cell *matCellDef="let element"> {{element.startDate.toLocaleDateString()}} </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="endDate">
+                  <th mat-header-cell *matHeaderCellDef> Urlaubsende </th>
+                  <td mat-cell *matCellDef="let element"> {{element.endDate.toLocaleDateString()}} </td>
+                </ng-container>
+            
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef> Status </th>
+                  <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-raised-button (click)="confirmClicked(element.id)">Genehmigen</button>
+                        <button mat-raised-button (click)="rejectClicked(element.id)" color="warn">Ablehnen</button>
+                    </td>
+                </ng-container>
+            
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsInProgress"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsInProgress;"></tr>
+            </table>
+        </mat-tab>
         <mat-tab label="Genehmigt">
             <table mat-table [dataSource]="dataSourceConfirmed" class="mat-elevation-z8">
                 <!--- Note that these columns can be defined in any order.
                       The actual rendered columns are set as a property on the row definition" -->
                 
                 <!-- Type Column -->
+                <ng-container matColumnDef="nameOfEmployee">
+                    <th mat-header-cell *matHeaderCellDef> Antragssteller </th>
+                    <td mat-cell *matCellDef="let element"> {{element.employee.lastName}} {{element.employee.firstName}}</td>
+                </ng-container>
+
                 <ng-container matColumnDef="dateOfRequest">
                   <th mat-header-cell *matHeaderCellDef> Antragsdatum </th>
                   <td mat-cell *matCellDef="let element"> {{element.dateOfRequest.toLocaleDateString()}} </td>
@@ -37,36 +85,11 @@
                       The actual rendered columns are set as a property on the row definition" -->
                 
                 <!-- Type Column -->
-                <ng-container matColumnDef="dateOfRequest">
-                  <th mat-header-cell *matHeaderCellDef> Antragsdatum </th>
-                  <td mat-cell *matCellDef="let element"> {{element.dateOfRequest.toLocaleDateString()}} </td>
+                <ng-container matColumnDef="nameOfEmployee">
+                    <th mat-header-cell *matHeaderCellDef> Antragssteller </th>
+                    <td mat-cell *matCellDef="let element"> {{element.employee.lastName}} {{element.employee.firstName}}</td>
                 </ng-container>
-            
-                <ng-container matColumnDef="startDate">
-                  <th mat-header-cell *matHeaderCellDef> Urlaubsbeginn </th>
-                  <td mat-cell *matCellDef="let element"> {{element.startDate.toLocaleDateString()}} </td>
-                </ng-container>
-            
-                <ng-container matColumnDef="endDate">
-                  <th mat-header-cell *matHeaderCellDef> Urlaubsende </th>
-                  <td mat-cell *matCellDef="let element"> {{element.endDate.toLocaleDateString()}} </td>
-                </ng-container>
-            
-                <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef> Status </th>
-                  <td mat-cell *matCellDef="let element"> {{element.status}} </td>
-                </ng-container>
-            
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-        </mat-tab>
-        <mat-tab label="In Bearbeitung">
-            <table mat-table [dataSource]="dataSourceInProgress" class="mat-elevation-z8">
-                <!--- Note that these columns can be defined in any order.
-                      The actual rendered columns are set as a property on the row definition" -->
-                
-                <!-- Type Column -->
+
                 <ng-container matColumnDef="dateOfRequest">
                   <th mat-header-cell *matHeaderCellDef> Antragsdatum </th>
                   <td mat-cell *matCellDef="let element"> {{element.dateOfRequest.toLocaleDateString()}} </td>
