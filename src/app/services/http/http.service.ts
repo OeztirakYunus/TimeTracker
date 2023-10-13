@@ -25,6 +25,7 @@ export interface UserToAdd {
 })
 export class HttpService {
   private httpClient: HttpClient;
+  //private url : string = "https://728ch9w0-5001.euw.devtunnels.ms/api/";
   private url : string = "https://localhost:5001/api/";
 
   constructor(http: HttpClient, private cookieService : CookieService, private dialog: MatDialog) {
@@ -47,6 +48,9 @@ export class HttpService {
         });
 
         workDay.workedHours = workdayUn.workedHours;
+        workDay.endDate = workdayUn.endDate;
+        workDay.vacationDay = workdayUn.vacationDay;
+        workDay.breakHours = workdayUn.breakHours;
       }
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
@@ -249,8 +253,9 @@ export class HttpService {
     }
   }
 
-  public async getAsPdf(workMonth : WorkMonth) : Promise<Blob>{
-    var path = "WorkMonths/createPdf/" + workMonth.id;
+  public async getAsPdf(workMonth : WorkMonth, employeeId : string, date : Date) : Promise<Blob>{
+
+    var path = "WorkMonths/createPdf/" + employeeId + "/" + workMonth.id + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
     headers = headers.set('Accept', 'application/pdf');
     var pdfData = new Blob();
@@ -262,6 +267,7 @@ export class HttpService {
         return response;
       }
     } catch (error : any) {
+      console.log(error);
       this.showErrorMessage(error.error.message);
     }
     finally{
@@ -343,6 +349,17 @@ export class HttpService {
 
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  async deleteVacation(vacation : Vacation) {
+    var path = 'Vacations/' + vacation.id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {
+      await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
     }

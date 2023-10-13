@@ -10,6 +10,7 @@ import { Employee } from 'src/app/model/employee';
 import { Router } from '@angular/router';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-employees',
@@ -18,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class EmployeesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'employeeRole', 'actions'];
-  dataSource : Employee[] = [];
+  dataSource = new MatTableDataSource([] as Employee[]);
 
   constructor(private httpService : HttpService, public dialog : MatDialog, public router : Router){}
   
@@ -26,12 +27,18 @@ export class EmployeesComponent implements OnInit {
     await this.getEmployees();
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   async getEmployees(){
-    this.dataSource = await this.httpService.getEmployees();
+    var data = await this.httpService.getEmployees();
+    this.dataSource = new MatTableDataSource(data);
   }
 
   openAdd(){
-    this.router.navigate(['/mitarbeiter/add']);
+    this.router.navigate(['/mitarbeiter/hinzufuegen']);
   }
 
   async deleteEmployee(employee : Employee){
@@ -40,7 +47,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   editEmployee(employee : Employee){
-    this.router.navigate(['/mitarbeiter/edit/' + employee.id]);
+    this.router.navigate(['/mitarbeiter/bearbeiten/' + employee.id]);
   }
   
   viewHours(employee : Employee){

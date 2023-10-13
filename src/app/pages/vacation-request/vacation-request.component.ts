@@ -63,8 +63,13 @@ export class VacationRequestComponent implements OnInit{
 
   async addClicked(){
     let vacation = new VacationAdd();
-    vacation.startDate = this.startDate.toDate();
-    vacation.endDate = this.endDate.toDate();
+    var startDate = this.startDate.toDate();
+    var endDate = this.endDate.toDate();
+    var vsDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 1);
+    var veDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() + 1);
+
+    vacation.startDate = vsDate;
+    vacation.endDate = veDate;
     await this.http.addVacation(vacation);
   }
 }

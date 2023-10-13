@@ -31,3 +31,8 @@ mat-form-field{
     --clock-face-background-color: #f0f0f0;
     --clock-hand-color: #F44336 !important;
 }
+
+td, th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}

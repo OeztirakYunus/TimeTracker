@@ -27,6 +27,7 @@ import { AddEmployeeComponent } from './pages/employees/add-employee/add-employe
 import { VacationRequestComponent } from './pages/vacation-request/vacation-request.component';
 import { VacationsComponent } from './pages/vacations/vacations.component';
 import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
+import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { VacationRequestAdminComponent } from './pages/vacation-request-admin/va
     AddEmployeeComponent,
     VacationRequestComponent,
     VacationsComponent,
-    VacationRequestAdminComponent
+    VacationRequestAdminComponent,
+    NotificationOfIllnessComponent
     
   ],
   imports: [

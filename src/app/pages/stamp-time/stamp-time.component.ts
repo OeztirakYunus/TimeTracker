@@ -18,6 +18,7 @@ export class StampTimeComponent implements OnInit {
   workDay : WorkDay = new WorkDay();
   stampButtonText = "Dienstbeginn";
   breakButtonText = "Pause";
+  public vacationDay = false;
 
   constructor(private http : HttpService){
   }
@@ -72,6 +73,10 @@ export class StampTimeComponent implements OnInit {
         this.breakButtonText = "Pause"; 
         return;
       }
+    }
+    this.vacationDay = this.workDay.vacationDay;
+    if(this.vacationDay){
+      this.dataSource = [];
     }
   }
 

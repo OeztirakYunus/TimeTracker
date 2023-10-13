@@ -1,6 +1,11 @@
 <div class="content">
     <h1>Mitarbeiter</h1>
 
+    <mat-form-field color="warn" class="searchField">
+      <mat-label>Suchen</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+
     <button class="addButton" mat-mini-fab color="warn" (click)="openAdd()">
         <mat-icon>add</mat-icon>
     </button>

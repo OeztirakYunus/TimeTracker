@@ -8,6 +8,7 @@ import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpService } from 'src/app/services/http/http.service';
 
 export const MY_FORMATS = {
@@ -36,7 +37,7 @@ export class HourListForEmployeeComponent implements OnInit {
 
   private employeeId : string = "";
   public employee : Employee = new Employee();
-  constructor(private activatedroute:ActivatedRoute, private http : HttpService)
+  constructor(private activatedroute:ActivatedRoute, private http : HttpService, private auth : AuthService)
   {
     this.employeeId = activatedroute.snapshot.params["id"];
     this.getWorkMonth();
@@ -56,9 +57,11 @@ export class HourListForEmployeeComponent implements OnInit {
 
   public pickedDate : moment.Moment = moment();
   workMonth = new WorkMonth();
+  public vacationDay = false;
+
 
   async getAsPdf(){
-    await this.http.getAsPdf(this.workMonth);
+    await this.http.getAsPdf(this.workMonth, this.employeeId, this.pickedDate.toDate());
   }
 
   async getWorkMonth(){
@@ -75,10 +78,11 @@ export class HourListForEmployeeComponent implements OnInit {
       this.days = this.workMonth.workDays[this.pickedDate.toDate().getDate() - 1];
       this.lengthOfPaginator = this.days.length; 
       day = this.days[0]?.stamps;
+      this.vacationDay = this.days[0].vacationDay;
     }
     this.dataSourceMonth = workDays;
     
-    if(day != undefined){
+    if(day != undefined && this.vacationDay == false){
       this.dataSourceDay = day;
     }
     else{
@@ -142,5 +146,19 @@ export class HourListForEmployeeComponent implements OnInit {
   async saveChanges(element : Stamp){
     await this.http.updateStamp(element);
     await this.getWorkMonth();
+  }
+
+  public getBackgoundColorForMonthList(element : WorkDay){
+    if(element.vacationDay){
+      return "yellow";
+    }
+    return "white";
+  }
+
+  public getColText(element : WorkDay, text : string){
+    if(element.vacationDay){
+      return "U";
+    }
+    return text;
   }
 }

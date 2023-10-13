@@ -12,19 +12,21 @@ import { AddEmployeeComponent } from './pages/employees/add-employee/add-employe
 import { VacationRequestComponent } from './pages/vacation-request/vacation-request.component';
 import { VacationsComponent } from './pages/vacations/vacations.component';
 import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
+import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
 
 const routes: Routes = [
   { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
   { path:'register', component:RegisterComponent},
   { path:'login', component:LoginComponent},
   { path:'stunden', component:HourListComponent, canActivate:[AuthGuardService]},
+  { path:'krankmeldung', component:NotificationOfIllnessComponent, canActivate:[AuthGuardService]},
   { path:'urlaube', component:VacationsComponent, canActivate:[AuthGuardService]},
   { path:'urlaube/antrag', component:VacationRequestComponent, canActivate:[AuthGuardService]},
   { path:'urlaube/antrag/admin', component:VacationRequestAdminComponent, canActivate:[AuthGuardService],  data: {role: "Admin"}},
   { path:'mitarbeiter', component:EmployeesComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
-  { path:'mitarbeiter/add', component:AddEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
+  { path:'mitarbeiter/hinzufuegen', component:AddEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
-  { path:'mitarbeiter/edit/:id', component:EditEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
+  { path:'mitarbeiter/bearbeiten/:id', component:EditEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path: '', redirectTo: '/stempeln', pathMatch: 'full'},
 ];
 

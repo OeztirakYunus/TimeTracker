@@ -63,38 +63,39 @@
                   (page)="handlePageEvent($event)"
                   aria-label="Select Stamp">
           </mat-paginator>
+          <h3 *ngIf="vacationDay">Urlaub</h3>
         </mat-tab>
         <mat-tab label="Monatsliste">
           <table mat-table [dataSource]="dataSourceMonth" class="mat-elevation-z8">
             <!--- Note that these columns can be defined in any order.
-               The actual rendered columns are set as a property on the row definition" -->
-         
-         <!-- Type Column -->
-         <ng-container matColumnDef="day">
-           <th mat-header-cell *matHeaderCellDef> Tag </th>
-           <td mat-cell *matCellDef="let element"> {{element.startDate.getDate()}} </td>
-         </ng-container>
+                  The actual rendered columns are set as a property on the row definition" -->
+            
+            <!-- Type Column -->
+            <ng-container matColumnDef="day">
+              <th mat-header-cell *matHeaderCellDef> Tag </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{element.startDate.getDate()}} </td>
+            </ng-container>
 
-         <ng-container matColumnDef="startTime">
-           <th mat-header-cell *matHeaderCellDef> Beginn </th>
-           <td mat-cell *matCellDef="let element"> {{getTime(element.startDate)}} </td>
-         </ng-container>
+            <ng-container matColumnDef="startTime">
+              <th mat-header-cell *matHeaderCellDef> Beginn </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,getTime(element.startDate))}} </td>
+            </ng-container>
 
-         <ng-container matColumnDef="endTime">
-           <th mat-header-cell *matHeaderCellDef> Ende </th>
-           <td mat-cell *matCellDef="let element"> {{getTime(element.endDate)}} </td>
-         </ng-container>
-     
-         <ng-container matColumnDef="breakHours">
-           <th mat-header-cell *matHeaderCellDef> Pausen in Stunden </th>
-           <td mat-cell *matCellDef="let element"> {{element.breakHours}} </td>
-         </ng-container>
+            <ng-container matColumnDef="endTime">
+              <th mat-header-cell *matHeaderCellDef> Ende </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,getTime(element.endDate))}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="breakHours">
+              <th mat-header-cell *matHeaderCellDef> Pausen in Stunden </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,element.breakHours)}} </td>
+            </ng-container>
 
-          <!-- Hours Column -->
-          <ng-container matColumnDef="workedHours">
-           <th mat-header-cell *matHeaderCellDef> Arbeitszeit in Stunden </th>
-           <td mat-cell *matCellDef="let element"> {{element.workedHours}} </td>
-         </ng-container>
+             <!-- Hours Column -->
+             <ng-container matColumnDef="workedHours">
+              <th mat-header-cell *matHeaderCellDef> Arbeitszeit in Stunden </th>
+              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,element.workedHours)}} </td>
+            </ng-container>
          
              <tr mat-header-row *matHeaderRowDef="displayedColumnsMonth"></tr>
              <tr mat-row *matRowDef="let row; columns: displayedColumnsMonth;"></tr>

@@ -22,6 +22,7 @@
     <mat-nav-list>
       <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Stempeln</a>
       <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">Stunden</a>
+      <a mat-list-item  [routerLink]="'/krankmeldung'" (click)="sidenav.toggle()">Krankmeldung</a>
       <a mat-menu-item [matMenuTriggerFor]="vacations">Urlaube</a>
       <a mat-list-item  *ngIf="userIsAdmin" [routerLink]="'/mitarbeiter'" (click)="sidenav.toggle()">Mitarbeiter</a>
     </mat-nav-list>
