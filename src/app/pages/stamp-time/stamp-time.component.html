@@ -1,7 +1,7 @@
 <div class="content">
     <h1>{{dateNow}}</h1>
-    <button *ngIf="!vacationDay" mat-raised-button color="warn" (click)="stamp()">{{stampButtonText}}</button>
-    <button *ngIf="!vacationDay" mat-raised-button color="warn" (click)="takeABreak()">{{breakButtonText}}</button>
+    <button *ngIf="!vacationDay && !illDay" mat-raised-button color="warn" (click)="stamp()">{{stampButtonText}}</button>
+    <button *ngIf="!vacationDay && !illDay" mat-raised-button color="warn" (click)="takeABreak()">{{breakButtonText}}</button>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
@@ -21,5 +21,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <h3 *ngIf="vacationDay">Sie haben momentan Urlaub und können daher nicht Stempeln.</h3>
+    <h3 *ngIf="vacationDay && !illDay">Sie haben momentan Urlaub und können daher nicht Stempeln.</h3>
+    <h3 *ngIf="illDay">Sie sind momentan Krank gemeldet und können daher nicht Stempeln.</h3>
+
 </div>

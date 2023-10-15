@@ -14,19 +14,36 @@ export class VacationRequestAdminComponent implements OnInit {
   dataSourceConfirmed = new MatTableDataSource([] as Vacation[]);
   dataSourceRejected = new MatTableDataSource([] as Vacation[]);
   dataSourceInProgress = new MatTableDataSource([] as Vacation[]);
+  dataSourceArchive = new MatTableDataSource([] as Vacation[]);
 
   constructor(private http : HttpService) {    
   }
   async ngOnInit() {
     await this.getAllVacations();
+
+    this.dataSourceInProgress.filterPredicate = (data, filter: string)  => this.filterPredicat(data, filter);
+    this.dataSourceArchive.filterPredicate = (data, filter: string)  => this.filterPredicat(data, filter);
+    this.dataSourceConfirmed.filterPredicate = (data, filter: string)  => this.filterPredicat(data, filter);
+    this.dataSourceRejected.filterPredicate = (data, filter: string)  => this.filterPredicat(data, filter);
+  }
+
+  private filterPredicat(data : Vacation, filter : string){
+    return data.employee.lastName.toLocaleLowerCase().includes(filter) ||
+      data.employee.firstName.toLocaleLowerCase().includes(filter) ||
+      data.dateOfRequest.toDateString().toLocaleLowerCase().includes(filter) ||
+      data.startDate.toDateString().toLocaleLowerCase().includes(filter) ||
+      data.endDate.toDateString().toLocaleLowerCase().includes(filter)
   }
 
   async getAllVacations(){
     var vacations = await this.http.getAllVacations();
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
 
     this.dataSourceInProgress = new MatTableDataSource(vacations.filter(i => i.status === "InBearbeitung"));
-    this.dataSourceConfirmed = new MatTableDataSource(vacations.filter(i => i.status === "Bestaetigt"));
-    this.dataSourceRejected = new MatTableDataSource(vacations.filter(i => i.status === "Abgelehnt"));
+    this.dataSourceConfirmed = new MatTableDataSource(vacations.filter(i => i.status === "Bestaetigt").filter(i => !(i.startDate < currentDate && i.endDate > currentDate)));
+    this.dataSourceRejected = new MatTableDataSource(vacations.filter(i => i.status === "Abgelehnt").filter(i => !(i.startDate < currentDate && i.endDate > currentDate)));
+    this.dataSourceArchive = new MatTableDataSource(vacations.filter(i => (i.startDate < currentDate && i.endDate > currentDate) && i.status !== "InBearbeitung"));
   }
 
   applyFilter(event: Event) {
@@ -34,7 +51,7 @@ export class VacationRequestAdminComponent implements OnInit {
     this.dataSourceConfirmed.filter = filterValue.trim().toLowerCase();
     this.dataSourceInProgress.filter = filterValue.trim().toLowerCase();
     this.dataSourceRejected.filter = filterValue.trim().toLowerCase();
-
+    this.dataSourceArchive.filter = filterValue.trim().toLowerCase();
   }
 
   async confirmClicked(id : string){

@@ -52,6 +52,7 @@ export class HttpService {
         workDay.workedHours = workdayUn.workedHours;
         workDay.endDate = workdayUn.endDate;
         workDay.vacationDay = workdayUn.vacationDay;
+        workDay.illDay = workdayUn.illDay;
         workDay.breakHours = workdayUn.breakHours;
       }
     } catch (error : any) {
@@ -441,6 +442,18 @@ export class HttpService {
       this.showErrorMessage(error.error.message);
     }
   }
+
+  async deleteNoi(noi : NotificationOfIllness) {
+    var path = 'NotificationOfIllnesses/' + noi.id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {
+      await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
 
   private showErrorMessage(message: string){
     this.dialog.open(MessageDialogComponent, {

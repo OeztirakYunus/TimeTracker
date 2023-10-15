@@ -81,5 +81,35 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </mat-tab>
+        <mat-tab label="Archive">
+          <table mat-table [dataSource]="dataSourceArchive" class="mat-elevation-z8" #archiveTableSort="matSort" matSort>
+              <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+              
+              <!-- Type Column -->
+              <ng-container matColumnDef="dateOfRequest">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Antragsdatum </th>
+                <td mat-cell *matCellDef="let element"> {{element.dateOfRequest.toLocaleDateString()}} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Urlaubsbeginn </th>
+                <td mat-cell *matCellDef="let element"> {{element.startDate.toLocaleDateString()}} </td>
+              </ng-container>
+          
+              <ng-container matColumnDef="endDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Urlaubsende </th>
+                <td mat-cell *matCellDef="let element"> {{element.endDate.toLocaleDateString()}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+              </ng-container>
+          
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsConfirmed"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsConfirmed;"></tr>
+          </table>
+      </mat-tab>
       </mat-tab-group>
 </div>

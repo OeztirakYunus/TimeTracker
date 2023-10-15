@@ -63,7 +63,8 @@
                   (page)="handlePageEvent($event)"
                   aria-label="Select Stamp">
           </mat-paginator>
-          <h3 *ngIf="vacationDay">Urlaub</h3>
+          <h3 *ngIf="vacationDay && !illDay">Urlaub</h3>
+          <h3 *ngIf="illDay">Krank</h3>
         </mat-tab>
         <mat-tab label="Monatsliste">
           <table mat-table [dataSource]="dataSourceMonth" class="mat-elevation-z8">

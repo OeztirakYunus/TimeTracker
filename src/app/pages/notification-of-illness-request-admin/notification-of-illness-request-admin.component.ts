@@ -30,23 +30,46 @@ export const MY_FORMATS = {
 })
 export class NotificationOfIllnessRequestAdminComponent {
   @ViewChild('noiTableSort') noiTableSort: MatSort;
-  displayedColumns: string[] = ['nameOfEmployee', 'startDate', 'endDate', 'isConfirmed'];
+  displayedColumns: string[] = ['nameOfEmployee', 'startDate', 'endDate', 'isConfirmed', 'actions'];
   dataSource = new MatTableDataSource([] as NotificationOfIllness[]);
 
   constructor(private http : HttpService) {}
 
   async ngOnInit() {
+    await this.getAll();
+  }
+
+  async getAll(){
     var nois = await this.http.getAllNois();
     this.dataSource = new MatTableDataSource(nois);
+    
+    this.dataSource.filterPredicate = (data, filter: string)  => this.filterPredicat(data, filter);
     this.dataSource.sort = this.noiTableSort;
   }
 
-  onChange(noi : NotificationOfIllness){
+  private filterPredicat(data : NotificationOfIllness, filter : string){
+    return data.employee.lastName.toLocaleLowerCase().includes(filter) ||
+      data.employee.firstName.toLocaleLowerCase().includes(filter) ||
+      data.startDate.toDateString().toLocaleLowerCase().includes(filter) ||
+      data.endDate.toDateString().toLocaleLowerCase().includes(filter)
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  async onChange(noi : NotificationOfIllness){
     if(noi.isConfirmed){
-      this.http.confirmNoi(noi.id);
+      await this.http.confirmNoi(noi.id);
     }
     else{
-      this.http.rejectNoi(noi.id);
+      await this.http.rejectNoi(noi.id);
     }
+  }
+
+  async deleteNoi(noi : NotificationOfIllness){
+    await this.http.deleteNoi(noi);
+    await this.getAll();
   }
 }

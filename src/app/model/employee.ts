@@ -8,4 +8,8 @@ export class Employee {
     public numberOfKids : number = 0;
     public id : string = "";
     public companyId : string = "";
+
+    public toString = () : string => {
+        return this.lastName + " " + this.firstName;
+    }
 }

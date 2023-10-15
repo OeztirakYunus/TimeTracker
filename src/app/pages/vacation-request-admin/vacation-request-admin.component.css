@@ -5,3 +5,8 @@
 button{
     margin-right: 5px;
 }
+
+.searchField{
+    width: 40%;
+    margin-right: 10px;
+}

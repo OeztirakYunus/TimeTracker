@@ -58,6 +58,7 @@ export class HourListForEmployeeComponent implements OnInit {
   public pickedDate : moment.Moment = moment();
   workMonth = new WorkMonth();
   public vacationDay = false;
+  public illDay = false;
 
 
   async getAsPdf(){
@@ -79,6 +80,7 @@ export class HourListForEmployeeComponent implements OnInit {
       this.lengthOfPaginator = this.days.length; 
       day = this.days[0]?.stamps;
       this.vacationDay = this.days[0].vacationDay;
+      this.illDay = this.days[0].illDay;
     }
     this.dataSourceMonth = workDays;
     
