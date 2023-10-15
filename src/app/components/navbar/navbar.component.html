@@ -22,7 +22,7 @@
     <mat-nav-list>
       <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Stempeln</a>
       <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">Stunden</a>
-      <a mat-list-item  [routerLink]="'/krankmeldung'" (click)="sidenav.toggle()">Krankmeldung</a>
+      <a mat-menu-item [matMenuTriggerFor]="notificationOfIllness">Krankmeldungen</a>
       <a mat-menu-item [matMenuTriggerFor]="vacations">Urlaube</a>
       <a mat-list-item  *ngIf="userIsAdmin" [routerLink]="'/mitarbeiter'" (click)="sidenav.toggle()">Mitarbeiter</a>
     </mat-nav-list>
@@ -31,7 +31,13 @@
 </mat-drawer-container>
 
 <mat-menu #vacations="matMenu">
-  <button mat-menu-item [routerLink]="'/urlaube'" (click)="sidenav.toggle()">Meine Urlaube</button>
-  <button mat-menu-item [routerLink]="'/urlaube/antrag'" (click)="sidenav.toggle()">Urlaubsantrag</button>
-  <button mat-menu-item *ngIf="userIsAdmin" [routerLink]="'/urlaube/antrag/admin'" (click)="sidenav.toggle()">Urlaubsanträge | Admin</button>
+  <button mat-menu-item [routerLink]="'/urlaub'" (click)="sidenav.toggle()">Meine Urlaube</button>
+  <button mat-menu-item [routerLink]="'/urlaub/antrag'" (click)="sidenav.toggle()">Urlaubsantrag</button>
+  <button mat-menu-item *ngIf="userIsAdmin" [routerLink]="'/urlaub/antrag/admin'" (click)="sidenav.toggle()">Urlaubsanträge | Admin</button>
+</mat-menu>
+
+<mat-menu #notificationOfIllness="matMenu">
+  <button mat-menu-item [routerLink]="'/krankmeldung'" (click)="sidenav.toggle()">Meine Krankmeldungen</button>
+  <button mat-menu-item [routerLink]="'/krankmeldung/antrag'" (click)="sidenav.toggle()">Krankmeldung</button>
+  <button mat-menu-item *ngIf="userIsAdmin" [routerLink]="'/krankmeldung/antrag/admin'" (click)="sidenav.toggle()">Krankmeldungen | Admin</button>
 </mat-menu>

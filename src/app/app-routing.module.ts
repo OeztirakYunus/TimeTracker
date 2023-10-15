@@ -13,16 +13,20 @@ import { VacationRequestComponent } from './pages/vacation-request/vacation-requ
 import { VacationsComponent } from './pages/vacations/vacations.component';
 import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
 import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
+import { NotificationOfIllnessRequestComponent } from './pages/notification-of-illness-request/notification-of-illness-request.component';
+import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
 
 const routes: Routes = [
   { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
   { path:'register', component:RegisterComponent},
   { path:'login', component:LoginComponent},
   { path:'stunden', component:HourListComponent, canActivate:[AuthGuardService]},
+  { path:'urlaub', component:VacationsComponent, canActivate:[AuthGuardService]},
+  { path:'urlaub/antrag', component:VacationRequestComponent, canActivate:[AuthGuardService]},
+  { path:'urlaub/antrag/admin', component:VacationRequestAdminComponent, canActivate:[AuthGuardService],  data: {role: "Admin"}},
   { path:'krankmeldung', component:NotificationOfIllnessComponent, canActivate:[AuthGuardService]},
-  { path:'urlaube', component:VacationsComponent, canActivate:[AuthGuardService]},
-  { path:'urlaube/antrag', component:VacationRequestComponent, canActivate:[AuthGuardService]},
-  { path:'urlaube/antrag/admin', component:VacationRequestAdminComponent, canActivate:[AuthGuardService],  data: {role: "Admin"}},
+  { path:'krankmeldung/antrag', component:NotificationOfIllnessRequestComponent, canActivate:[AuthGuardService]},
+  { path:'krankmeldung/antrag/admin', component:NotificationOfIllnessRequestAdminComponent, canActivate:[AuthGuardService],  data: {role: "Admin"}},
   { path:'mitarbeiter', component:EmployeesComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/hinzufuegen', component:AddEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},

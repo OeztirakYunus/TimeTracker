@@ -1,0 +1,21 @@
+<div class="content">
+    <h1>Krankmeldung</h1>
+    <p>Datumsbereich für den Krankenstand auswählen:</p>
+    <mat-form-field color="warn">
+        <mat-label>Datumsbereich auswählen</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date" [(ngModel)]="startDate">
+          <input matEndDate placeholder="End date" [(ngModel)]="endDate">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <div style="display: none">
+        <p>Ärtzliche Bestätigung (Optional): <b>{{selectedFile == undefined ? "Keine Datei ausgewählt" : selectedFile.name }}</b></p>
+        <button mat-raised-button color="warn" (click)="hiddenfileinput.click()" >Datei hochladen</button>
+        <input type="file" style="display: none" (change)="onFileSelect($event)" #hiddenfileinput>
+    </div>
+    <br>
+    <button mat-raised-button color="warn" (click)="onAddClicked()">Krank melden</button>
+    <br>
+</div>

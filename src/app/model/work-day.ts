@@ -7,4 +7,5 @@ export class WorkDay {
     public breakHours : number = 0;
     public stamps : Stamp[] = [];
     public vacationDay : boolean = false;
+    public illDay : boolean = false;
 }

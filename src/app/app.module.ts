@@ -28,6 +28,8 @@ import { VacationRequestComponent } from './pages/vacation-request/vacation-requ
 import { VacationsComponent } from './pages/vacations/vacations.component';
 import { VacationRequestAdminComponent } from './pages/vacation-request-admin/vacation-request-admin.component';
 import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
+import { NotificationOfIllnessRequestComponent } from './pages/notification-of-illness-request/notification-of-illness-request.component';
+import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
 
 
 @NgModule({
@@ -46,7 +48,9 @@ import { NotificationOfIllnessComponent } from './pages/notification-of-illness/
     VacationRequestComponent,
     VacationsComponent,
     VacationRequestAdminComponent,
-    NotificationOfIllnessComponent
+    NotificationOfIllnessComponent,
+    NotificationOfIllnessRequestComponent,
+    NotificationOfIllnessRequestAdminComponent
     
   ],
   imports: [

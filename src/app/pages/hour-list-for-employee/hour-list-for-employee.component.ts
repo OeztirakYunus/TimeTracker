@@ -149,14 +149,20 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   public getBackgoundColorForMonthList(element : WorkDay){
-    if(element.vacationDay){
+    if(element.illDay){
+      return "red";
+    }
+    else if(element.vacationDay){
       return "yellow";
     }
     return "white";
   }
 
   public getColText(element : WorkDay, text : string){
-    if(element.vacationDay){
+    if(element.illDay){
+      return "K";
+    }
+    else if(element.vacationDay){
       return "U";
     }
     return text;

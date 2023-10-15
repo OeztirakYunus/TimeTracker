@@ -11,6 +11,8 @@ import { MessageDialogComponent } from 'src/app/components/message-dialog/messag
 import { MatDialog } from '@angular/material/dialog';
 import { Vacation } from 'src/app/model/vacation';
 import { VacationAdd } from 'src/app/model/vacation-add';
+import { NotificationOfIllness } from 'src/app/model/notification-of-illness';
+import { NotificationOfIllnessAdd } from 'src/app/model/notification-of-illness-add';
 
 
 export interface UserToAdd {
@@ -360,6 +362,81 @@ export class HttpService {
 
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  async addNotificationOfIllness(noi : NotificationOfIllnessAdd) {
+    var path = 'NotificationOfIllnesses/';
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    headers = headers.set('Accept', 'application/json');
+
+    try {
+      await this.httpClient.post<IAuthResponse>(this.url + path, noi, {headers}).toPromise();
+    } catch (error : any) {
+      console.log(error);
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  async getNotificationOfIllnesses() {
+    var path = "NotificationOfIllnesses/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var nois = [] as NotificationOfIllness[];
+    try {   
+      let noisUn = await this.httpClient.get<NotificationOfIllness[]>(this.url + path, { headers }).toPromise();
+      nois = noisUn === undefined ? [] : noisUn;
+      nois.forEach(element => {
+        element.startDate = this.parseDate(element.startDate);
+        element.endDate = this.parseDate(element.endDate);
+      });
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+    finally{
+      return nois;
+    }
+  }
+
+  async getAllNois() {
+    var path = "NotificationOfIllnesses/forCompany/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    var nois = [] as NotificationOfIllness[];
+    try {   
+      let noisUn = await this.httpClient.get<NotificationOfIllness[]>(this.url + path, { headers }).toPromise();
+      nois = noisUn === undefined ? [] : noisUn;
+      nois.forEach(element => {
+        element.startDate = this.parseDate(element.startDate);
+        element.endDate = this.parseDate(element.endDate);
+      });
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+    finally{
+      return nois;
+    }
+  }
+
+  async confirmNoi(id : string) {
+    var path = "NotificationOfIllnesses/confirm/" + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  async rejectNoi(id : string) {
+    var path = "NotificationOfIllnesses/reject/" + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
     }
