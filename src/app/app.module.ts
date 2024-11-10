@@ -30,6 +30,7 @@ import { VacationRequestAdminComponent } from './pages/vacation-request-admin/va
 import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
 import { NotificationOfIllnessRequestComponent } from './pages/notification-of-illness-request/notification-of-illness-request.component';
 import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
+import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { NotificationOfIllnessRequestAdminComponent } from './pages/notification
     VacationRequestAdminComponent,
     NotificationOfIllnessComponent,
     NotificationOfIllnessRequestComponent,
-    NotificationOfIllnessRequestAdminComponent
+    NotificationOfIllnessRequestAdminComponent,
+    AddStampComponent
     
   ],
   imports: [

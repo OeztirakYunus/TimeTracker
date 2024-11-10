@@ -1,0 +1,15 @@
+ <mat-form-field>
+    <mat-label>Stempeltyp auswählen</mat-label>
+    <mat-select>
+      <mat-option value="Dienstbeginn">Dienstbeginn</mat-option>
+      <mat-option value="Dienstende">Dienstende</mat-option>
+      <mat-option value="Pause">Pause</mat-option>
+      <mat-option value="PauseEnde">Pausenende</mat-option>
+    </mat-select>
+  </mat-form-field>
+<div class="timePickerDiv">
+    <mat-form-field color="warn" appearance="outline">
+      <input matInput placeholder="24hr format" aria-label="24hr format"  [value]="getValueForTimePicker()" [ngxTimepicker]="fullTime" [format]="24"  readonly>    
+    </mat-form-field>
+  <ngx-material-timepicker class="custome-class" #fullTime (timeChanged)="timeChanged($event)"></ngx-material-timepicker>
+</div> 

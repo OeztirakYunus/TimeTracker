@@ -29,9 +29,9 @@ export class VacationsComponent implements OnInit {
     var currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + 1);
     this.dataSourceInProgress = new MatTableDataSource(vacations.filter(i => i.status === "InBearbeitung"));
-    this.dataSourceConfirmed = new MatTableDataSource(vacations.filter(i => i.status === "Bestaetigt").filter(i => !(i.startDate < currentDate && i.endDate > currentDate)));
-    this.dataSourceRejected = new MatTableDataSource(vacations.filter(i => i.status === "Abgelehnt").filter(i => !(i.startDate < currentDate && i.endDate > currentDate)));
-    this.dataSourceArchive = new MatTableDataSource(vacations.filter(i => (i.startDate < currentDate && i.endDate > currentDate) && i.status !== "InBearbeitung"));
+    this.dataSourceConfirmed = new MatTableDataSource(vacations.filter(i => i.status === "Bestaetigt").filter(i => !(i.startDate < currentDate && i.endDate < currentDate)));
+    this.dataSourceRejected = new MatTableDataSource(vacations.filter(i => i.status === "Abgelehnt").filter(i => !(i.startDate < currentDate && i.endDate < currentDate)));
+    this.dataSourceArchive = new MatTableDataSource(vacations.filter(i => (i.startDate < currentDate && i.endDate < currentDate) && i.status !== "InBearbeitung"));
 
     this.dataSourceConfirmed.sort = this.confirmedTableSort;
     this.dataSourceInProgress.sort = this.inProgressTableSort;

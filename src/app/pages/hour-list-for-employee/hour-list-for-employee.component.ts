@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
@@ -10,6 +11,7 @@ import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpService } from 'src/app/services/http/http.service';
+import { AddStampComponent } from '../add-stamp/add-stamp.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -37,7 +39,7 @@ export class HourListForEmployeeComponent implements OnInit {
 
   private employeeId : string = "";
   public employee : Employee = new Employee();
-  constructor(private activatedroute:ActivatedRoute, private http : HttpService, private auth : AuthService)
+  constructor(private activatedroute:ActivatedRoute, private http : HttpService, private auth : AuthService, public router : Router, public dialog: MatDialog)
   {
     this.employeeId = activatedroute.snapshot.params["id"];
     this.getWorkMonth();
@@ -115,6 +117,11 @@ export class HourListForEmployeeComponent implements OnInit {
     return date.toLocaleTimeString();
   }
 
+  async deleteWorkDay(stamp : Stamp){
+    await this.http.deleteWorkDay(stamp.workDayId)
+    await this.getWorkMonth();
+  }
+
   getValueForTimePicker(element : Stamp){
     var timeWithSeconds = this.getTime(element.time);
     var timeSplitted = timeWithSeconds.split(":");
@@ -168,5 +175,29 @@ export class HourListForEmployeeComponent implements OnInit {
       return "U";
     }
     return text;
+  }
+
+  public async takeABreakManually() {
+    var day = this.pickedDate.toDate().getDate();
+    var month = this.pickedDate.toDate().getMonth();
+    var year = this.pickedDate.toDate().getFullYear();
+    var date = new Date();
+    date.setFullYear(year);
+    date.setMonth(month);
+    date.setDate(day);
+    await this.http.takeABreakManually(this.employeeId, date);
+    await this.getWorkMonth();
+  }
+
+  public async stampManually(){
+    var day = this.pickedDate.toDate().getDate();
+    var month = this.pickedDate.toDate().getMonth();
+    var year = this.pickedDate.toDate().getFullYear();
+    var date = new Date();
+    date.setFullYear(year);
+    date.setMonth(month);
+    date.setDate(day);
+    await this.http.stampManually(this.employeeId, date);
+    await this.getWorkMonth();
   }
 }

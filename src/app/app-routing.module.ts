@@ -15,6 +15,7 @@ import { VacationRequestAdminComponent } from './pages/vacation-request-admin/va
 import { NotificationOfIllnessComponent } from './pages/notification-of-illness/notification-of-illness.component';
 import { NotificationOfIllnessRequestComponent } from './pages/notification-of-illness-request/notification-of-illness-request.component';
 import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
+import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
 
 const routes: Routes = [
   { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path:'mitarbeiter', component:EmployeesComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/hinzufuegen', component:AddEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
+  { path:'mitarbeiter/:id/stempel/hinzufuegen', component:AddStampComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/bearbeiten/:id', component:EditEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path: '', redirectTo: '/stempeln', pathMatch: 'full'},
 ];

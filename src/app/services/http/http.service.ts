@@ -91,8 +91,31 @@ export class HttpService {
     }
   }
 
+  public async stampManually(employeeId : string, pickedDate : Date) : Promise<void>{
+    var path = "Stamps/stamp/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    console.log(path)
+    
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
   public async takeABreak() : Promise<void>{
     var path = "Stamps/break"
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    
+    try {   
+      await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  public async takeABreakManually(employeeId : string, pickedDate : Date) : Promise<void>{
+    var path = "Stamps/break/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate()
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
     
     try {   
@@ -453,6 +476,18 @@ export class HttpService {
       this.showErrorMessage(error.error.message);
     }
   }
+
+  async deleteWorkDay(id : string) {
+    var path = 'WorkDays/' + id;
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+
+    try {
+      await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
 
 
   private showErrorMessage(message: string){

@@ -9,7 +9,10 @@
     </mat-form-field>
     <button mat-raised-button color="warn" (click)="getWorkMonth()">Suchen</button>
     <br>
+    <button mat-raised-button color="warn" class="addButton" (click)="stampManually()">Stempel hinzufügen</button>
+    <button mat-raised-button color="warn" class="addButton" (click)="takeABreakManually()">Pause hinzufügen</button>
     <button mat-raised-button color="warn" (click)="getAsPdf()">Als PDF exportieren</button>
+
     <mat-tab-group color="warn">
         <mat-tab label="Tagesliste">
           <table mat-table [dataSource]="dataSourceDay" class="mat-elevation-z8">
@@ -48,7 +51,7 @@
                 <button class="actionButton" mat-mini-fab color="warn" (click)="saveChanges(element)">
                   <mat-icon>save</mat-icon>
                 </button>
-                <button mat-mini-fab color="warn">
+                <button mat-mini-fab color="warn" (click)="deleteWorkDay(element)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>

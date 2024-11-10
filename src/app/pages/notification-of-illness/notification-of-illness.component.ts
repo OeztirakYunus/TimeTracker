@@ -31,14 +31,23 @@ export const MY_FORMATS = {
 })
 export class NotificationOfIllnessComponent implements OnInit {
   @ViewChild('noiTableSort') noiTableSort: MatSort;
+  @ViewChild('noiArchiveTableSort') noiArchiveTableSort: MatSort;
   displayedColumns: string[] = ['startDate', 'endDate', 'isConfirmed'];
   dataSource = new MatTableDataSource([] as NotificationOfIllness[]);
+  dataSourceArchive = new MatTableDataSource([] as NotificationOfIllness[]);
 
   constructor(private http : HttpService) {}
 
   async ngOnInit() {
     var nois = await this.http.getNotificationOfIllnesses();
-    this.dataSource = new MatTableDataSource(nois);
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    this.dataSource = new MatTableDataSource(nois); //.filter(i => !(i.startDate < currentDate && i.endDate > currentDate)));
+    // Archive funktioniert noch nicht!
+    this.dataSourceArchive = new MatTableDataSource(nois.filter(i => (i.startDate < currentDate && i.endDate > currentDate)));
+
+    this.dataSourceArchive.sort = this.noiArchiveTableSort;
     this.dataSource.sort = this.noiTableSort;
   }
 }

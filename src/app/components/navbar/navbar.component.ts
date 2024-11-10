@@ -23,5 +23,6 @@ export class NavbarComponent {
 
   async logout(){
     await this.auth.logout();
+    location.reload();
   }
 }
