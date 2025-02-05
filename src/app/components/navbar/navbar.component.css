@@ -15,3 +15,22 @@ mat-nav-list{
     width: 135px;
     height: 45px;
 }
+
+.companyName{
+    margin-left: 1%;
+    font-size: x-large;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav-item .material-icons {
+    margin-right: 15px;
+}

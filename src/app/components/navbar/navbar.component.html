@@ -4,6 +4,7 @@
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </button>
     <img class="logo" src='/assets/images/timelogLogo2.png'>
+    <h1 *ngIf="this.isLoggedIn()" class="companyName">| {{companyName}}</h1>
     <!-- <img class="logo" src='/assets/images/Bild1.png'> -->
     <span class="menu-spacer"></span>
     <ng-container>
@@ -20,11 +21,36 @@
 <mat-drawer-container autosize>
   <mat-drawer #sidenav mode="side">
     <mat-nav-list>
-      <a mat-list-item  [routerLink]="'/stempeln'" (click)="sidenav.toggle()">Stempeln</a>
-      <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">Stunden</a>
-      <a mat-menu-item [matMenuTriggerFor]="notificationOfIllness">Krankmeldungen</a>
-      <a mat-menu-item [matMenuTriggerFor]="vacations">Urlaube</a>
-      <a mat-list-item  *ngIf="userIsAdmin" [routerLink]="'/mitarbeiter'" (click)="sidenav.toggle()">Mitarbeiter</a>
+      <a mat-list-item  [routerLink]="'/zeiterfassung'" (click)="sidenav.toggle()">
+        <div class="nav-item">
+            <span class="material-icons">access_time</span>
+            <span>Zeiterfassung</span>
+        </div>
+      </a>
+      <a mat-list-item  [routerLink]="'/stunden'" (click)="sidenav.toggle()">
+        <div class="nav-item">
+          <span class="material-icons">timeline</span>
+          <span>Stunden</span>
+        </div>
+      </a>
+      <a mat-menu-item [matMenuTriggerFor]="notificationOfIllness">
+        <div class="nav-item">
+          <span class="material-icons">healing</span>
+          <span>Krankmeldungen</span>
+      </div>
+      </a>
+      <a mat-menu-item [matMenuTriggerFor]="vacations">
+        <div class="nav-item">
+          <span class="material-icons">beach_access</span>
+          <span>Urlaube</span>
+        </div>
+      </a>
+      <a mat-list-item  *ngIf="userIsAdmin" [routerLink]="'/mitarbeiter'" (click)="sidenav.toggle()">
+        <div class="nav-item">
+          <span class="material-icons">group</span>
+          <span>Mitarbeiter</span>
+      </div>
+      </a>
     </mat-nav-list>
   </mat-drawer>
   <ng-content></ng-content>

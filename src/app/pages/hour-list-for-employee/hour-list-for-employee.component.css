@@ -1,18 +1,100 @@
-mat-form-field{
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin: 20px 0;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.button-group, .action-group {
+    display: flex;
+    gap: 10px;
     margin-bottom: 10px;
+}
+
+mat-form-field {
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+button {
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[color="warn"] {
+    background-color: #ff5252;
+    color: #fff;
+}
+
+button[color="warn"]:hover {
+    background-color: #ff1744;
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #3f51b5;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.timePickerDiv {
+    display: inline-block;
     margin-right: 10px;
-}
-
-.content{
-    margin: 30px;
-}
-
-.actionButton{
-    margin-right: 5px;
-}
-
-.timePickerDiv{
-    margin-top: 20px;
 }
 
 ::ng-deep ngx-material-timepicker-content{
@@ -32,11 +114,11 @@ mat-form-field{
     --clock-hand-color: #F44336 !important;
 }
 
-td, th {
-    text-align: center !important;
-    vertical-align: middle !important;
+mat-form-field[appearance="outline"] {
+    margin: 0;
 }
 
-.addButton{
-    margin-right: 10px;
+h3 {
+    color: #d32f2f;
+    margin-top: 20px;
 }

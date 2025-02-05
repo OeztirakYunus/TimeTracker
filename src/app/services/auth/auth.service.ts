@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { JwtTokenService } from '../jwt/jwt-token.service';
-import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
+import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from 'src/app/model/employee';
 
@@ -106,7 +106,7 @@ export class AuthService {
     this.dialog.open(MessageDialogComponent, {
       height: 'fit',
       width: 'fit',
-      data: {title: "Ein Fehler ist aufgetreten!", content: message}
+      data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
     });
   }
 }

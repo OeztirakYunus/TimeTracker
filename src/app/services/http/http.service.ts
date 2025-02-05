@@ -7,7 +7,7 @@ import { WorkMonth } from 'src/app/model/work-month';
 import { Employee } from 'src/app/model/employee';
 import { Stamp } from 'src/app/model/stamp';
 import { EmployeeEdit } from 'src/app/model/employee-edit';
-import { MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
+import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Vacation } from 'src/app/model/vacation';
 import { VacationAdd } from 'src/app/model/vacation-add';
@@ -131,10 +131,10 @@ export class HttpService {
     
     var companyName = "";
     try {   
-      let cN = await this.httpClient.get<string>(this.url + path, { headers }).toPromise();
-      companyName = cN as string;
+      var cN = await this.httpClient.get(this.url + path, { headers, responseType: 'text' }).toPromise();
+      companyName = cN == null ? "" : cN;
     } catch (error : any) {
-      this.showErrorMessage(error.error.message);
+     // this.showErrorMessage(error.message);
     }
     finally{
       return companyName;
@@ -246,6 +246,16 @@ export class HttpService {
 
   public async updateStamp(stamp : Stamp) : Promise<void>{
     var path = "Stamps/";
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    try {   
+      await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
+    } catch (error : any) {
+      this.showErrorMessage(error.error.message);
+    }
+  }
+
+  public async updateStamps(stamp : Array<Stamp>) : Promise<void>{
+    var path = "Stamps/updateMany";
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
     try {   
       await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
@@ -494,7 +504,7 @@ export class HttpService {
     this.dialog.open(MessageDialogComponent, {
       height: 'fit',
       width: 'fit',
-      data: {title: "Ein Fehler ist aufgetreten!", content: message}
+      data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
     });
   }
 }

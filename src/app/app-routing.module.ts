@@ -18,7 +18,7 @@ import { NotificationOfIllnessRequestAdminComponent } from './pages/notification
 import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
 
 const routes: Routes = [
-  { path:'stempeln', component:StampTimeComponent, canActivate:[AuthGuardService] },
+  { path:'zeiterfassung', component:StampTimeComponent, canActivate:[AuthGuardService] },
   { path:'register', component:RegisterComponent},
   { path:'login', component:LoginComponent},
   { path:'stunden', component:HourListComponent, canActivate:[AuthGuardService]},
@@ -33,7 +33,7 @@ const routes: Routes = [
   { path:'mitarbeiter/:id', component:HourListForEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/:id/stempel/hinzufuegen', component:AddStampComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
   { path:'mitarbeiter/bearbeiten/:id', component:EditEmployeeComponent, canActivate:[AuthGuardService], data: {role: "Admin"}},
-  { path: '', redirectTo: '/stempeln', pathMatch: 'full'},
+  { path: '**', redirectTo: '/zeiterfassung', pathMatch: 'full'},
 ];
 
 @NgModule({

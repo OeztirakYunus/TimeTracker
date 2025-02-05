@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { HttpService } from 'src/app/services/http/http.service';
@@ -20,12 +22,19 @@ export class StampTimeComponent implements OnInit {
   breakButtonText = "Pause";
   public vacationDay = false;
   public illDay = false;
+  private clockElement: HTMLElement;
 
-  constructor(private http : HttpService){
+  constructor(private http : HttpService, private dialog : MatDialog){
   }
   
   async ngOnInit() {
     this.getWorkDay();
+    var element = document.getElementById('liveClock');
+    if (!element) {
+      throw new Error(`Element with id liveClock not found.`);
+    }
+    this.clockElement = element;
+    this.startClock();
   }
 
   public  formatDate(date : Date) : string {
@@ -47,13 +56,28 @@ export class StampTimeComponent implements OnInit {
   }
 
   public async takeABreak() {
-    await this.http.takeABreak();
-    await this.getWorkDay();
+    var confirmText = "Möchten Sie die Pause beenden?"
+    if(this.breakButtonText == "Pause"){
+      confirmText = "Möchten Sie die Pause beginnen?";
+    }
+    var confirm = await this.showConfirmDialog(confirmText);
+    if(confirm){
+      await this.http.takeABreak();
+      await this.getWorkDay();
+    }
   }
 
   public async stamp(){
-    await this.http.stamp();
-    await this.getWorkDay();
+    var confirmText = "Möchten Sie den Dienst beenden?"
+    if(this.stampButtonText == "Dienstbeginn"){
+      confirmText = "Möchten Sie den Dienst starten?";
+    }
+    var confirm = await this.showConfirmDialog(confirmText);
+
+    if(confirm){
+      await this.http.stamp();
+      await this.getWorkDay();
+    }
   }
 
   private async getWorkDay() {
@@ -61,6 +85,9 @@ export class StampTimeComponent implements OnInit {
     this.dataSource = this.workDay.stamps;
     if(this.dataSource.some(i => i.typeOfStamp === "Dienstbeginn")){
       this.stampButtonText = "Dienstende";
+    }
+    else{
+      this.stampButtonText = "Dienstbeginn";
     }
     this.dataSource = this.dataSource.sort((a, b) => a.time.getTime() - b.time.getTime());
 
@@ -97,4 +124,49 @@ export class StampTimeComponent implements OnInit {
         return "white";
     }   
   }
+
+  private updateClock(): void {
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+    this.clockElement.innerText = now.toLocaleTimeString('de-DE', options);
+}
+
+  private startClock(): void {
+      this.updateClock(); // Initialer Aufruf
+      setInterval(() => this.updateClock(), 1000);
+  }
+
+    private showConfirmDialog(message: string): Promise<boolean> {
+      const dialogRef = this.dialog.open(MessageDialogComponent, {
+        height: 'fit',
+        width: 'fit',
+        data: { 
+          title: "Sind Sie sicher?", 
+          content: message, 
+          dialogType: DialogType.CONFIRM 
+        }
+      });
+    
+      return new Promise<boolean>((resolve) => {
+        dialogRef.afterClosed().subscribe(result => {
+          if (result === true) {
+            resolve(true);  // Benutzer hat bestätigt
+          } else {
+            resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
+          }
+        });
+      });
+    }  
+  
+    private showErrorMessage(message: string){
+      this.dialog.open(MessageDialogComponent, {
+        height: 'fit',
+        width: 'fit',
+        data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
+      });
+    }
 }

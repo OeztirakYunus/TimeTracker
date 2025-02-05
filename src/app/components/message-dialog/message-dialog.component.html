@@ -1,5 +1,10 @@
-<h1 mat-dialog-title>{{messageData.title}}</h1>
-<div mat-dialog-content>{{messageData.content}}</div>
-<div mat-dialog-actions>
-  <button color="warn" mat-raised-button mat-dialog-close>Ok</button>
+<h1 mat-dialog-title class="dialog-title">
+  <span *ngIf="isError" class="material-icons error-icon">error_outline</span>
+  <span *ngIf="!isError" class="material-icons confirm-icon">check_circle_outline</span>
+  {{messageData.title}}
+</h1>
+<div mat-dialog-content class="dialog-content">{{messageData.content}}</div>
+    <div mat-dialog-actions class="dialog-actions">
+        <button *ngIf="!isError" mat-raised-button (click)="onConfirm()" >Bestätigen</button>
+        <button color="warn" mat-raised-button (click)="onCancel()">Schließen</button>
 </div>

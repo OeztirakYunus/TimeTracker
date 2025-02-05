@@ -1,109 +1,109 @@
 <div class="content">
-  
     <h1>Stunden von {{employee.lastName}} {{employee.firstName}}</h1>
-    <mat-form-field color="warn">
-        <mat-label>Datum auswählen</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="pickedDate">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <button mat-raised-button color="warn" (click)="getWorkMonth()">Suchen</button>
-    <br>
-    <button mat-raised-button color="warn" class="addButton" (click)="stampManually()">Stempel hinzufügen</button>
-    <button mat-raised-button color="warn" class="addButton" (click)="takeABreakManually()">Pause hinzufügen</button>
-    <button mat-raised-button color="warn" (click)="getAsPdf()">Als PDF exportieren</button>
+    <div class="controls">
+        <mat-form-field color="warn">
+            <mat-label>Datum auswählen</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="pickedDate" (dateChange)="getWorkMonth()">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
 
-    <mat-tab-group color="warn">
+        <div class="button-group">
+            <button mat-raised-button color="warn" (click)="stampManually()">{{stampButtonText}}</button>
+            <button mat-raised-button color="warn" (click)="takeABreakManually()">{{breakButtonText}}</button>
+        </div>
+
+        <div class="button-group">
+            <button mat-raised-button color="warn" (click)="getAsPdf()">Als PDF exportieren</button>
+        </div>
+
+        <div class="action-group">
+            <button class="actionButton" mat-mini-fab color="warn" (click)="saveStamps()">
+                <mat-icon>save</mat-icon>
+            </button>
+            <button class="actionButton" mat-mini-fab color="warn" (click)="deleteWorkDay()">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-tab-group color="warn" style="width: 100%;">
         <mat-tab label="Tagesliste">
-          <table mat-table [dataSource]="dataSourceDay" class="mat-elevation-z8">
-              <!--- Note that these columns can be defined in any order.
-                    The actual rendered columns are set as a property on the row definition" -->
-              
-            <!-- Type Column -->
-            <ng-container matColumnDef="typeOfStamp">
-              <th mat-header-cell *matHeaderCellDef> Art </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgroundColor(element.typeOfStamp)"> {{element.typeOfStamp}} </td>
-            </ng-container>
-        
-            <!-- Time Column -->
-            <ng-container matColumnDef="time">
-              <th mat-header-cell *matHeaderCellDef> Uhrzeit </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgroundColor(element.typeOfStamp)">
-                <div class="timePickerDiv">
-                  <mat-form-field color="warn" appearance="outline">
-                    <input matInput placeholder="24hr format" aria-label="24hr format"  [value]="getValueForTimePicker(element)" [ngxTimepicker]="fullTime" [format]="24"  readonly>    
-                  </mat-form-field>
-                <ngx-material-timepicker class="custome-class" #fullTime (timeChanged)="timeChanged($event, element)"></ngx-material-timepicker>
-                </div> 
-                <mat-form-field appearance="outline" color="warn">
-                  <mat-label>Datum auswählen</mat-label>
-                  <input matInput [matDatepicker]="picker" [value]="getDateForElement(element)" (dateChange)="dateChanged($event, element)">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-              
-              </td>
-            </ng-container>
+            <table mat-table [dataSource]="dataSourceDay" class="mat-elevation-z8">
+                <ng-container matColumnDef="typeOfStamp">
+                    <th mat-header-cell *matHeaderCellDef> Art </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgroundColor(element.typeOfStamp)">
+                        {{element.typeOfStamp}}
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Aktionen </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgroundColor(element.typeOfStamp)">
-                <button class="actionButton" mat-mini-fab color="warn" (click)="saveChanges(element)">
-                  <mat-icon>save</mat-icon>
-                </button>
-                <button mat-mini-fab color="warn" (click)="deleteWorkDay(element)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
-            
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsDay"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumnsDay;"></tr>
-          </table>
-          <mat-paginator *ngIf="lengthOfPaginator > 1" [length]="lengthOfPaginator"
-                  [pageSize]="1"
-                  [hidePageSize]="true"
-                  (page)="handlePageEvent($event)"
-                  aria-label="Select Stamp">
-          </mat-paginator>
-          <h3 *ngIf="vacationDay && !illDay">Urlaub</h3>
-          <h3 *ngIf="illDay">Krank</h3>
+                <ng-container matColumnDef="time">
+                    <th mat-header-cell *matHeaderCellDef> Uhrzeit </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgroundColor(element.typeOfStamp)">
+                        <div class="timePickerDiv">
+                            <mat-form-field color="warn" appearance="outline">
+                                <input matInput placeholder="24hr format" aria-label="24hr format" [value]="getValueForTimePicker(element)" [ngxTimepicker]="fullTime" [format]="24" readonly>
+                            </mat-form-field>
+                            <ngx-material-timepicker class="custome-class" #fullTime (timeChanged)="timeChanged($event, element)"></ngx-material-timepicker>
+                        </div>
+                        <mat-form-field appearance="outline" color="warn">
+                            <mat-label>Datum auswählen</mat-label>
+                            <input matInput [matDatepicker]="picker" [value]="getDateForElement(element)" (dateChange)="dateChanged($event, element)">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsDay"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsDay;"></tr>
+            </table>
+            <mat-paginator *ngIf="lengthOfPaginator > 1" [length]="lengthOfPaginator" [pageSize]="1" [hidePageSize]="true" (page)="handlePageEvent($event)" aria-label="Select Stamp">
+            </mat-paginator>
+            <h3 *ngIf="vacationDay && !illDay">Urlaub</h3>
+            <h3 *ngIf="illDay">Krank</h3>
         </mat-tab>
+
         <mat-tab label="Monatsliste">
-          <table mat-table [dataSource]="dataSourceMonth" class="mat-elevation-z8">
-            <!--- Note that these columns can be defined in any order.
-                  The actual rendered columns are set as a property on the row definition" -->
-            
-            <!-- Type Column -->
-            <ng-container matColumnDef="day">
-              <th mat-header-cell *matHeaderCellDef> Tag </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{element.startDate.getDate()}} </td>
-            </ng-container>
+            <table mat-table [dataSource]="dataSourceMonth" class="mat-elevation-z8">
+                <ng-container matColumnDef="day">
+                    <th mat-header-cell *matHeaderCellDef> Tag </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)">
+                        {{element.startDate.getDate()}}
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="startTime">
-              <th mat-header-cell *matHeaderCellDef> Beginn </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,getTime(element.startDate))}} </td>
-            </ng-container>
+                <ng-container matColumnDef="startTime">
+                    <th mat-header-cell *matHeaderCellDef> Beginn </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)">
+                        {{getColText(element, getTime(element.startDate))}}
+                    </td>
+                </ng-container>
 
-            <ng-container matColumnDef="endTime">
-              <th mat-header-cell *matHeaderCellDef> Ende </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,getTime(element.endDate))}} </td>
-            </ng-container>
-        
-            <ng-container matColumnDef="breakHours">
-              <th mat-header-cell *matHeaderCellDef> Pausen in Stunden </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,element.breakHours)}} </td>
-            </ng-container>
+                <ng-container matColumnDef="endTime">
+                    <th mat-header-cell *matHeaderCellDef> Ende </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)">
+                        {{getColText(element, getTime(element.endDate))}}
+                    </td>
+                </ng-container>
 
-             <!-- Hours Column -->
-             <ng-container matColumnDef="workedHours">
-              <th mat-header-cell *matHeaderCellDef> Arbeitszeit in Stunden </th>
-              <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)"> {{getColText(element,element.workedHours)}} </td>
-            </ng-container>
-         
-             <tr mat-header-row *matHeaderRowDef="displayedColumnsMonth"></tr>
-             <tr mat-row *matRowDef="let row; columns: displayedColumnsMonth;"></tr>
-         </table>
+                <ng-container matColumnDef="breakHours">
+                    <th mat-header-cell *matHeaderCellDef> Pausen in Stunden </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)">
+                        {{getColText(element, element.breakHours)}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="workedHours">
+                    <th mat-header-cell *matHeaderCellDef> Arbeitszeit in Stunden </th>
+                    <td mat-cell *matCellDef="let element" [style.background-color]="getBackgoundColorForMonthList(element)">
+                        {{getColText(element, element.workedHours)}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsMonth"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsMonth;"></tr>
+            </table>
         </mat-tab>
     </mat-tab-group>
-    </div>
+</div>

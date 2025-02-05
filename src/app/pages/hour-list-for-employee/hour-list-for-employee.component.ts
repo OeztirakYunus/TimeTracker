@@ -12,6 +12,7 @@ import { WorkMonth } from 'src/app/model/work-month';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpService } from 'src/app/services/http/http.service';
 import { AddStampComponent } from '../add-stamp/add-stamp.component';
+import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 
 export const MY_FORMATS = {
   parse: {
@@ -49,7 +50,7 @@ export class HourListForEmployeeComponent implements OnInit {
     this.employee = await this.http.getEmployeeById(this.employeeId);
   }
 
-  displayedColumnsDay: string[] = ['typeOfStamp', 'time', 'actions'];
+  displayedColumnsDay: string[] = ['typeOfStamp', 'time'];
   dataSourceDay : Stamp[] = [];
   days : WorkDay[] = [];
   lengthOfPaginator : number = 0;
@@ -59,6 +60,8 @@ export class HourListForEmployeeComponent implements OnInit {
 
   public pickedDate : moment.Moment = moment();
   workMonth = new WorkMonth();
+  public stampButtonText = 'Dienstbeginn hinzufügen';
+  public breakButtonText = 'Pause hinzufügen';
   public vacationDay = false;
   public illDay = false;
 
@@ -92,6 +95,8 @@ export class HourListForEmployeeComponent implements OnInit {
     else{
       this.dataSourceDay = [];
     }
+
+    this.setButtonText(); 
   }
 
   handlePageEvent(event : PageEvent){
@@ -115,11 +120,6 @@ export class HourListForEmployeeComponent implements OnInit {
 
   public getTime(date : Date){
     return date.toLocaleTimeString();
-  }
-
-  async deleteWorkDay(stamp : Stamp){
-    await this.http.deleteWorkDay(stamp.workDayId)
-    await this.getWorkMonth();
   }
 
   getValueForTimePicker(element : Stamp){
@@ -152,9 +152,53 @@ export class HourListForEmployeeComponent implements OnInit {
     element.time.setMinutes(+time[1])
   }
 
-  async saveChanges(element : Stamp){
-    await this.http.updateStamp(element);
-    await this.getWorkMonth();
+  async saveStamps(){
+    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich speichern?");
+    if(confirmed){
+      if(this.dataSourceDay.length > 0){
+        await this.http.updateStamps(this.dataSourceDay);
+        await this.getWorkMonth();
+      }
+      else{
+        this.showErrorMessage("Keine Daten zum Speichern vorhanden!");
+      }
+    }
+  }
+
+  async deleteWorkDay(){
+    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich löschen?");
+    if(confirmed){
+      if(this.dataSourceDay.length > 0){
+        var stamp : Stamp = this.dataSourceDay[0];
+        await this.http.deleteWorkDay(stamp.workDayId);
+        await this.getWorkMonth();
+      } else{
+        this.showErrorMessage("Keine Daten zum Löschen vorhanden!");
+      }
+    }
+  }
+
+  public setButtonText(){
+    
+    if(this.dataSourceDay.some(i => i.typeOfStamp === "Dienstbeginn") && this.dataSourceDay.some(i => i.typeOfStamp === "Dienstende")){
+      this.stampButtonText = "Dienstbeginn hinzufügen";
+    }
+    else if(this.dataSourceDay.some(i => i.typeOfStamp === "Dienstbeginn")){
+      this.stampButtonText = "Dienstende hinzufügen";
+    }
+    this.dataSourceDay = this.dataSourceDay.sort((a, b) => a.time.getTime() - b.time.getTime());
+
+    for (let index = this.dataSourceDay.length - 1; index >= 0; index--) {
+      const element = this.dataSourceDay[index];
+      if(element.typeOfStamp == "Pause"){
+       this.breakButtonText = "Pausenende hinzufügen"; 
+       return;
+      }
+      else if(element.typeOfStamp == "PauseEnde"){
+        this.breakButtonText = "Pause hinzufügen"; 
+        return;
+      }
+    }
   }
 
   public getBackgoundColorForMonthList(element : WorkDay){
@@ -199,5 +243,35 @@ export class HourListForEmployeeComponent implements OnInit {
     date.setDate(day);
     await this.http.stampManually(this.employeeId, date);
     await this.getWorkMonth();
+  }
+
+  private showConfirmDialog(message: string): Promise<boolean> {
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: { 
+        title: "Sind Sie sicher?", 
+        content: message, 
+        dialogType: DialogType.CONFIRM 
+      }
+    });
+  
+    return new Promise<boolean>((resolve) => {
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === true) {
+          resolve(true);  // Benutzer hat bestätigt
+        } else {
+          resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
+        }
+      });
+    });
+  }  
+
+  private showErrorMessage(message: string){
+    this.dialog.open(MessageDialogComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
+    });
   }
 }
