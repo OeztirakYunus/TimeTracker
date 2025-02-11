@@ -12,8 +12,8 @@ import { Employee } from 'src/app/model/employee';
 })
 export class AuthService {
 
-  //private url : string = "https://728ch9w0-5001.euw.devtunnels.ms/api/Auth/";
-  private url = "https://localhost:5001/api/Auth/";
+  private url : string = "http://217.154.74.86/api/Auth/";
+  //private url = "https://localhost:5001/api/Auth/";
   public role = "";
   constructor(private httpClient: HttpClient, private router: Router, private cookieService: CookieService, private jwtService : JwtTokenService, private dialog: MatDialog) { }
 

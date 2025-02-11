@@ -27,8 +27,8 @@ export interface UserToAdd {
 })
 export class HttpService {
   private httpClient: HttpClient;
-  //private url : string = "https://728ch9w0-5001.euw.devtunnels.ms/api/";
-  private url : string = "https://localhost:5001/api/";
+  private url : string = "http://217.154.74.86/api/";
+  //private url : string = "https://localhost:5001/api/";
 
   constructor(http: HttpClient, private cookieService : CookieService, private dialog: MatDialog) {
     this.httpClient = http;
@@ -64,6 +64,8 @@ export class HttpService {
   }
 
   private parseDate(date : Date){
+    console.log("Here")
+    console.log(date)
     var fullDateSplitted = date.toString().split('T');
     var dateSplitted = fullDateSplitted[0].split('-');
     var timeSplitted = fullDateSplitted[1].split(':');
@@ -74,7 +76,7 @@ export class HttpService {
     newDate.setDate(+dateSplitted[2]);
     newDate.setHours(+timeSplitted[0]);
     newDate.setMinutes(+timeSplitted[1]);
-    newDate.setSeconds(+timeSplitted[2]);
+  //  newDate.setSeconds(+timeSplitted[2]);
 
     return newDate;
   }
@@ -147,6 +149,8 @@ export class HttpService {
     try {   
       let workMonthUn = await this.httpClient.get<WorkMonth>(this.url + path, { headers }).toPromise();
       if(workMonthUn != undefined){
+        console.log(workMonth);
+        console.log("--------------")
         workMonth.date = this.parseDate(workMonthUn.date);
         workMonth.workDays = workMonthUn.workDays;
         workMonth.id = workMonthUn.id;
@@ -178,8 +182,9 @@ export class HttpService {
   public async getWorkMonth(pickedDate : Date) : Promise<WorkMonth>{
     var path = "WorkMonths/date/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
-
     var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
+    console.log(workMonth);
+    console.log("--------------");
     return workMonth;
   }
 
@@ -187,6 +192,8 @@ export class HttpService {
     var path = "WorkMonths/date/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
     var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
     var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
+    console.log(workMonth);
+    console.log("--------------")
     return workMonth;
   }
 
