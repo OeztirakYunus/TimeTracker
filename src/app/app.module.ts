@@ -31,6 +31,7 @@ import { NotificationOfIllnessComponent } from './pages/notification-of-illness/
 import { NotificationOfIllnessRequestComponent } from './pages/notification-of-illness-request/notification-of-illness-request.component';
 import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
 import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
+import { LocalStorageCache } from '@auth0/auth0-angular';
 
 
 @NgModule({
@@ -66,7 +67,7 @@ import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
     HttpClientModule,
     NgxMaterialTimepickerModule
   ],
-  providers: [HttpService, JwtTokenService, AuthService, MessageDialogComponent],
+  providers: [HttpService, JwtTokenService, AuthService, MessageDialogComponent, LocalStorageCache],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

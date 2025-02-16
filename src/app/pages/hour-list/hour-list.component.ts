@@ -123,6 +123,34 @@ export class HourListComponent {
   }
 
   public getTime(date : Date){
-    return date.toLocaleTimeString();
+    var time = "";
+    time = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours().toLocaleString();
+    time += ":";
+    time += date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes().toLocaleString();
+    return time;
+  }
+
+  public roundNumberAsString(nmbr : number){
+    return this.customRound(nmbr, 1).toString();
+  }
+
+  private customRound(value: number, decimalPlaces: number): number {
+    if (value === 0) return 0;
+
+    const valueStr = value.toString();
+
+    // Falls der Wert größer als 1 oder kleiner als -1 ist, normal runden
+    if (Math.abs(value) >= 1) {
+        return parseFloat(value.toFixed(decimalPlaces));
+    }
+
+    // Sonst: Finde die erste signifikante Stelle nach der 0
+    const match = valueStr.match(/0\.0*(\d)/);
+    if (match) {
+        const significantDigits = match[0].length - 2; // Anzahl der führenden Nullen nach "0."
+        return parseFloat(value.toFixed(significantDigits + decimalPlaces));
+    }
+
+    return parseFloat(value.toFixed())
   }
 }

@@ -119,7 +119,11 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   public getTime(date : Date){
-    return date.toLocaleTimeString();
+    var time = "";
+    time = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours().toLocaleString();
+    time += ":";
+    time += date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes().toLocaleString();
+    return time;
   }
 
   getValueForTimePicker(element : Stamp){
@@ -158,6 +162,7 @@ export class HourListForEmployeeComponent implements OnInit {
       if(this.dataSourceDay.length > 0){
         await this.http.updateStamps(this.dataSourceDay);
         await this.getWorkMonth();
+        this.showNotification("Daten wurden erfolgreich gespeichert!");
       }
       else{
         this.showErrorMessage("Keine Daten zum Speichern vorhanden!");
@@ -172,6 +177,7 @@ export class HourListForEmployeeComponent implements OnInit {
         var stamp : Stamp = this.dataSourceDay[0];
         await this.http.deleteWorkDay(stamp.workDayId);
         await this.getWorkMonth();
+        this.showNotification("Daten wurden erfolgreich gelöscht!");
       } else{
         this.showErrorMessage("Keine Daten zum Löschen vorhanden!");
       }
@@ -222,27 +228,57 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   public async takeABreakManually() {
-    var day = this.pickedDate.toDate().getDate();
-    var month = this.pickedDate.toDate().getMonth();
-    var year = this.pickedDate.toDate().getFullYear();
-    var date = new Date();
-    date.setFullYear(year);
-    date.setMonth(month);
-    date.setDate(day);
-    await this.http.takeABreakManually(this.employeeId, date);
-    await this.getWorkMonth();
+    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich stempeln?");
+    if(confirmed){
+      var day = this.pickedDate.toDate().getDate();
+      var month = this.pickedDate.toDate().getMonth();
+      var year = this.pickedDate.toDate().getFullYear();
+      var date = new Date();
+      date.setFullYear(year);
+      date.setMonth(month);
+      date.setDate(day);
+      await this.http.takeABreakManually(this.employeeId, date);
+      await this.getWorkMonth();
+    }
   }
 
   public async stampManually(){
-    var day = this.pickedDate.toDate().getDate();
-    var month = this.pickedDate.toDate().getMonth();
-    var year = this.pickedDate.toDate().getFullYear();
-    var date = new Date();
-    date.setFullYear(year);
-    date.setMonth(month);
-    date.setDate(day);
-    await this.http.stampManually(this.employeeId, date);
-    await this.getWorkMonth();
+    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich stempeln?");
+    if(confirmed){
+      var day = this.pickedDate.toDate().getDate();
+      var month = this.pickedDate.toDate().getMonth();
+      var year = this.pickedDate.toDate().getFullYear();
+      var date = new Date();
+      date.setFullYear(year);
+      date.setMonth(month);
+      date.setDate(day);
+      await this.http.stampManually(this.employeeId, date);
+      await this.getWorkMonth();
+    }
+  }
+
+  public roundNumberAsString(nmbr : number){
+    return this.customRound(nmbr, 1).toString();
+  }
+
+  private customRound(value: number, decimalPlaces: number): number {
+    if (value === 0) return 0;
+
+    const valueStr = value.toString();
+
+    // Falls der Wert größer als 1 oder kleiner als -1 ist, normal runden
+    if (Math.abs(value) >= 1) {
+        return parseFloat(value.toFixed(decimalPlaces));
+    }
+
+    // Sonst: Finde die erste signifikante Stelle nach der 0
+    const match = valueStr.match(/0\.0*(\d)/);
+    if (match) {
+        const significantDigits = match[0].length - 2; // Anzahl der führenden Nullen nach "0."
+        return parseFloat(value.toFixed(significantDigits + decimalPlaces));
+    }
+
+    return parseFloat(value.toFixed())
   }
 
   private showConfirmDialog(message: string): Promise<boolean> {
@@ -272,6 +308,14 @@ export class HourListForEmployeeComponent implements OnInit {
       height: 'fit',
       width: 'fit',
       data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
+    });
+  }
+
+  private showNotification(message : string){
+    this.dialog.open(MessageDialogComponent, {
+      height: 'fit',
+      width: 'fit',
+      data: {title: "Erfolgreich!", content: message, dialogType: DialogType.NOTIFICATION}
     });
   }
 }

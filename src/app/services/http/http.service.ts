@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { CookieService } from 'ngx-cookie-service';
 import { WorkDay } from 'src/app/model/work-day';
 import { IAuthResponse } from '../auth/auth.service';
 import { WorkMonth } from 'src/app/model/work-month';
@@ -13,6 +12,7 @@ import { Vacation } from 'src/app/model/vacation';
 import { VacationAdd } from 'src/app/model/vacation-add';
 import { NotificationOfIllness } from 'src/app/model/notification-of-illness';
 import { NotificationOfIllnessAdd } from 'src/app/model/notification-of-illness-add';
+import { LocalStorageCache } from '@auth0/auth0-angular';
 
 
 export interface UserToAdd {
@@ -27,16 +27,16 @@ export interface UserToAdd {
 })
 export class HttpService {
   private httpClient: HttpClient;
-  private url : string = "http://217.154.74.86/api/";
-  //private url : string = "https://localhost:5001/api/";
+  //private url : string = "http://217.154.74.86/api/";
+  private url : string = "https://localhost:5001/api/";
 
-  constructor(http: HttpClient, private cookieService : CookieService, private dialog: MatDialog) {
+  constructor(http: HttpClient, private localStorageService : LocalStorageCache, private dialog: MatDialog) {
     this.httpClient = http;
   }
 
   public async getWorkDay() : Promise<WorkDay>{
     var path = "WorkDays/for-employee"
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     let workDay = new WorkDay();
     try {   
@@ -84,7 +84,7 @@ export class HttpService {
 
   public async stamp() : Promise<void>{
     var path = "Stamps/stamp"
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -95,7 +95,7 @@ export class HttpService {
 
   public async stampManually(employeeId : string, pickedDate : Date) : Promise<void>{
     var path = "Stamps/stamp/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     console.log(path)
     
     try {   
@@ -107,7 +107,7 @@ export class HttpService {
 
   public async takeABreak() : Promise<void>{
     var path = "Stamps/break"
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -118,7 +118,7 @@ export class HttpService {
 
   public async takeABreakManually(employeeId : string, pickedDate : Date) : Promise<void>{
     var path = "Stamps/break/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate()
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -129,7 +129,7 @@ export class HttpService {
 
   public async getCompanyName() : Promise<string>{
     var path = "Companies/name"
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     
     var companyName = "";
     try {   
@@ -181,7 +181,7 @@ export class HttpService {
 
   public async getWorkMonth(pickedDate : Date) : Promise<WorkMonth>{
     var path = "WorkMonths/date/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
     console.log(workMonth);
     console.log("--------------");
@@ -190,7 +190,7 @@ export class HttpService {
 
   public async getWorkMonthForEmployee(pickedDate : Date, employeeId : string) : Promise<WorkMonth>{
     var path = "WorkMonths/date/" + employeeId + "/" + pickedDate.getFullYear() + "-" + (pickedDate.getMonth() + 1) + "-" + pickedDate.getDate();
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     var workMonth = await this.getWorkMonthWithPathAndHeaders(path, headers);
     console.log(workMonth);
     console.log("--------------")
@@ -199,7 +199,7 @@ export class HttpService {
 
   async getEmployeeById(employeeId : string) {
     var path = "Auth/" + employeeId;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var employee = new Employee();
     try {   
@@ -215,7 +215,7 @@ export class HttpService {
 
   async addUser(user : UserToAdd) {
     var path = 'Auth/addUser';
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       await this.httpClient.post<IAuthResponse>(this.url + path, user, {headers}).toPromise();
@@ -226,7 +226,7 @@ export class HttpService {
 
   async deleteEmployee(user : Employee) {
     var path = 'Auth/' + user.id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
@@ -237,7 +237,7 @@ export class HttpService {
 
   public async getEmployees() : Promise<Employee[]>{
     var path = "Auth/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var employees = [] as Employee[];
     try {   
@@ -253,7 +253,7 @@ export class HttpService {
 
   public async updateStamp(stamp : Stamp) : Promise<void>{
     var path = "Stamps/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     try {   
       await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
     } catch (error : any) {
@@ -263,7 +263,7 @@ export class HttpService {
 
   public async updateStamps(stamp : Array<Stamp>) : Promise<void>{
     var path = "Stamps/updateMany";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     try {   
       await this.httpClient.put<IAuthResponse>(this.url + path, stamp,{ headers }).toPromise();
     } catch (error : any) {
@@ -273,7 +273,7 @@ export class HttpService {
 
   public async updateEmployee(employee : EmployeeEdit) : Promise<void>{
     var path = "Auth/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     try {   
       await this.httpClient.put<IAuthResponse>(this.url + path, employee,{ headers }).toPromise();
     } catch (error : any) {
@@ -283,7 +283,7 @@ export class HttpService {
 
   public async getEmployeeEdit(id : string): Promise<EmployeeEdit> {
     var path = 'Auth/' + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       var response = await this.httpClient.get<EmployeeEdit>(this.url + path,
@@ -299,7 +299,7 @@ export class HttpService {
   public async getAsPdf(workMonth : WorkMonth, employeeId : string, date : Date) : Promise<Blob>{
 
     var path = "WorkMonths/createPdf/" + employeeId + "/" + workMonth.id + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     headers = headers.set('Accept', 'application/pdf');
     var pdfData = new Blob();
     try {   
@@ -320,7 +320,7 @@ export class HttpService {
 
   async getVacations() {
     var path = "Vacations/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var vacations = [] as Vacation[];
     try {   
@@ -341,7 +341,7 @@ export class HttpService {
 
   async getAllVacations() {
     var path = "Vacations/forCompany/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var vacations = [] as Vacation[];
     try {   
@@ -362,7 +362,7 @@ export class HttpService {
 
   async addVacation(vacation : VacationAdd) {
     var path = 'Vacations/';
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     headers = headers.set('Accept', 'application/json');
     vacation.status = "0";
 
@@ -377,7 +377,7 @@ export class HttpService {
 
   async confirmVacation(id : string) {
     var path = "Vacations/confirm/" + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -388,7 +388,7 @@ export class HttpService {
 
   async rejectVacation(id : string) {
     var path = "Vacations/reject/" + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -399,7 +399,7 @@ export class HttpService {
 
   async deleteVacation(vacation : Vacation) {
     var path = 'Vacations/' + vacation.id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
@@ -410,7 +410,7 @@ export class HttpService {
 
   async addNotificationOfIllness(noi : NotificationOfIllnessAdd) {
     var path = 'NotificationOfIllnesses/';
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
     headers = headers.set('Accept', 'application/json');
 
     try {
@@ -423,7 +423,7 @@ export class HttpService {
 
   async getNotificationOfIllnesses() {
     var path = "NotificationOfIllnesses/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var nois = [] as NotificationOfIllness[];
     try {   
@@ -443,7 +443,7 @@ export class HttpService {
 
   async getAllNois() {
     var path = "NotificationOfIllnesses/forCompany/";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     var nois = [] as NotificationOfIllness[];
     try {   
@@ -463,7 +463,7 @@ export class HttpService {
 
   async confirmNoi(id : string) {
     var path = "NotificationOfIllnesses/confirm/" + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -474,7 +474,7 @@ export class HttpService {
 
   async rejectNoi(id : string) {
     var path = "NotificationOfIllnesses/reject/" + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {   
       await this.httpClient.get<IAuthResponse>(this.url + path, { headers }).toPromise();
@@ -485,7 +485,7 @@ export class HttpService {
 
   async deleteNoi(noi : NotificationOfIllness) {
     var path = 'NotificationOfIllnesses/' + noi.id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();
@@ -496,7 +496,7 @@ export class HttpService {
 
   async deleteWorkDay(id : string) {
     var path = 'WorkDays/' + id;
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     try {
       await this.httpClient.delete<IAuthResponse>(this.url + path, {headers}).toPromise();

@@ -9,7 +9,8 @@ export interface MessageData {
 
 export enum DialogType {
   ERROR = 'error',
-  CONFIRM = 'confirm'
+  CONFIRM = 'confirm',
+  NOTIFICATION = 'notification'
 }
 
 @Component({
@@ -19,13 +20,27 @@ export enum DialogType {
 })
 export class MessageDialogComponent {
   messageData : MessageData;
-  isError : boolean;
+  isConfirm : boolean;
+  iconString = "";
+  className = "material-icons error-icon";
+
   constructor(
     public dialogRef: MatDialogRef<MessageDialogComponent>,@Inject(MAT_DIALOG_DATA) messageData : MessageData)
   {
     this.messageData = messageData;
-    if(messageData.dialogType === DialogType.ERROR){
-      this.isError = true;
+    switch(messageData.dialogType){
+      case DialogType.CONFIRM:
+        this.isConfirm = true;
+        this.className = "material-icons confirm-icon";
+        break;
+      case DialogType.ERROR:
+        this.iconString = "error_outline";
+        this.className = "material-icons error-icon";
+        break;
+      case DialogType.NOTIFICATION:
+        this.iconString = "check_circle_outline";
+        this.className = "material-icons notification-icon";
+        break;
     }
   }
 

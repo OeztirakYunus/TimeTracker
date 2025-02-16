@@ -52,7 +52,11 @@ export class StampTimeComponent implements OnInit {
   }
 
   public getTime(date : Date){
-    return date.toLocaleTimeString();
+    var time = "";
+    time = date.getHours() <= 9 ? "0" + date.getHours() : date.getHours().toLocaleString();
+    time += ":";
+    time += date.getMinutes() <= 9 ? "0" + date.getMinutes() : date.getMinutes().toLocaleString();
+    return time;
   }
 
   public async takeABreak() {

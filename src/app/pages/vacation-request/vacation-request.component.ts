@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
+import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { Employee } from 'src/app/model/employee';
 import { Vacation } from 'src/app/model/vacation';
 import { VacationAdd } from 'src/app/model/vacation-add';
@@ -35,7 +37,7 @@ export class VacationRequestComponent implements OnInit{
   public endDate : moment.Moment = moment();
   public nameOfEmployee = "";
 
-  constructor(private http : HttpService, private auth : AuthService) {
+  constructor(private http : HttpService, private auth : AuthService, private dialog : MatDialog) {
   }
   async ngOnInit() {
     var user = await this.auth.getLoggedInUser();
@@ -56,8 +58,8 @@ export class VacationRequestComponent implements OnInit{
     }
 
     var diff = Math.abs(this.endDate.toDate().getTime() - this.startDate.toDate().getTime());
-    var diffDays = Math.ceil(diff / (1000 * 3600 * 24)); 
-    diffDays = diffDays < 1 ? 1 : diffDays;
+    var diffDays = Math.ceil(diff / (1000 * 3600 * 24)) + 1; 
+    diffDays = diffDays <= 1 ? 1 : diffDays;
     return diffDays.toString();
   }
 
@@ -70,6 +72,48 @@ export class VacationRequestComponent implements OnInit{
 
     vacation.startDate = vsDate;
     vacation.endDate = veDate;
-    await this.http.addVacation(vacation);
+    var confirm = await this.showConfirmDialog("Möchten Sie wirklich Urlaub von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " beantragen?");
+    if(confirm){
+      await this.http.addVacation(vacation);
+      this.showNotification("Urlaub erfolgreich beantragt!");
+    }
   }
+
+  private showConfirmDialog(message: string): Promise<boolean> {
+      const dialogRef = this.dialog.open(MessageDialogComponent, {
+        height: 'fit',
+        width: 'fit',
+        data: { 
+          title: "Sind Sie sicher?", 
+          content: message, 
+          dialogType: DialogType.CONFIRM 
+        }
+      });
+    
+      return new Promise<boolean>((resolve) => {
+        dialogRef.afterClosed().subscribe(result => {
+          if (result === true) {
+            resolve(true);  // Benutzer hat bestätigt
+          } else {
+            resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
+          }
+        });
+      });
+    }  
+  
+    private showErrorMessage(message: string){
+      this.dialog.open(MessageDialogComponent, {
+        height: 'fit',
+        width: 'fit',
+        data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
+      });
+    }
+  
+    private showNotification(message : string){
+      this.dialog.open(MessageDialogComponent, {
+        height: 'fit',
+        width: 'fit',
+        data: {title: "Erfolgreich!", content: message, dialogType: DialogType.NOTIFICATION}
+      });
+    }
 }

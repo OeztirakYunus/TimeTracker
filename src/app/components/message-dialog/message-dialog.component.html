@@ -1,10 +1,10 @@
 <h1 mat-dialog-title class="dialog-title">
-  <span *ngIf="isError" class="material-icons error-icon">error_outline</span>
-  <span *ngIf="!isError" class="material-icons confirm-icon">check_circle_outline</span>
+  <span *ngIf="!isConfirm" [class]="className">{{iconString}}</span>
+  <span *ngIf="isConfirm" [class]="className">help_outline</span>
   {{messageData.title}}
 </h1>
 <div mat-dialog-content class="dialog-content">{{messageData.content}}</div>
     <div mat-dialog-actions class="dialog-actions">
-        <button *ngIf="!isError" mat-raised-button (click)="onConfirm()" >Bestätigen</button>
+        <button *ngIf="isConfirm" mat-raised-button (click)="onConfirm()" >Bestätigen</button>
         <button color="warn" mat-raised-button (click)="onCancel()">Schließen</button>
 </div>

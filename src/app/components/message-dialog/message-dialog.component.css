@@ -12,6 +12,12 @@
 
 .confirm-icon {
     font-size: 40px;
+    color: orange;
+    margin-right: 10px;
+}
+
+.notification-icon {
+    font-size: 40px;
     color: #4caf50;
     margin-right: 10px;
 }

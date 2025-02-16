@@ -1,21 +1,21 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
 import { JwtTokenService } from '../jwt/jwt-token.service';
 import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from 'src/app/model/employee';
+import { LocalStorageCache } from '@auth0/auth0-angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url : string = "http://217.154.74.86/api/Auth/";
-  //private url = "https://localhost:5001/api/Auth/";
+  //private url : string = "http://217.154.74.86/api/Auth/";
+  private url = "https://localhost:5001/api/Auth/";
   public role = "";
-  constructor(private httpClient: HttpClient, private router: Router, private cookieService: CookieService, private jwtService : JwtTokenService, private dialog: MatDialog) { }
+  constructor(private httpClient: HttpClient, private router: Router, private localStorageService: LocalStorageCache, private jwtService : JwtTokenService, private dialog: MatDialog) { }
 
   async login(email: string, password: string): Promise<boolean> {
     var path = 'login';
@@ -25,9 +25,9 @@ export class AuthService {
       var response = await this.httpClient.get<IAuthResponse>(this.url + path,
         { headers }).toPromise();
       var authToken = response === undefined ? "" : response.auth_token;
-      this.cookieService.set('AuthToken', authToken);
+      this.localStorageService.set('AuthToken', authToken);
       var role = await this.getRole();
-      this.cookieService.set('UserRole', role);
+      this.localStorageService.set('UserRole', role);
       return true;
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
@@ -50,8 +50,8 @@ export class AuthService {
 
   async logout() {
     try {
-      this.cookieService.delete('AuthToken');
-      this.cookieService.delete('UserRole');
+      this.localStorageService.remove('AuthToken');
+      this.localStorageService.remove('UserRole');
     } catch (error : any) {
       this.showErrorMessage(error.error.message);
     }
@@ -60,7 +60,7 @@ export class AuthService {
   private async getRole(): Promise<string> {  
     if(this.isAuthenticated()){
       var path = 'role';
-      var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+      var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
       try {
         var response = await this.httpClient.get<IAuthResponse>(this.url + path,
           { headers }).toPromise();
@@ -77,7 +77,7 @@ export class AuthService {
 
   public async getLoggedInUser() : Promise<Employee>{
     var path = "authenticatedUser";
-    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.cookieService.get('AuthToken'));
+    var headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.localStorageService.get('AuthToken'));
 
     let employee = new Employee;
     try {   
@@ -92,8 +92,11 @@ export class AuthService {
   }
 
   public isAuthenticated(){
-    this.role = this.cookieService.check("UserRole") ? this.cookieService.get("UserRole") : "";
-    var isAuth =  this.cookieService.check("AuthToken") && !this.jwtService.isTokenExpired(this.cookieService.get("AuthToken"));
+    this.role = localStorage.getItem("UserRole") || "";
+    this.role = this.role.replaceAll("\"", "");
+
+    const authToken = localStorage.getItem("AuthToken");
+    const isAuth = authToken !== null && !this.jwtService.isTokenExpired(authToken);
 
     if(!isAuth){
       this.logout();
