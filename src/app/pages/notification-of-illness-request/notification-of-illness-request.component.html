@@ -10,10 +10,15 @@
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    <div style="display: none">
-        <p>Ärtzliche Bestätigung (Optional): <b>{{selectedFile == undefined ? "Keine Datei ausgewählt" : selectedFile.name }}</b></p>
-        <button mat-raised-button color="warn" (click)="hiddenfileinput.click()" >Datei hochladen</button>
-        <input type="file" style="display: none" (change)="onFileSelect($event)" #hiddenfileinput>
+    <div>
+        <span>Krankenstandsbestätigung hochladen:
+        <button mat-raised-button color="warn" (click)="hiddenfileinput.click()">Datei hochladen</button>
+        </span>
+        <div class="file-preview" *ngIf="selectedFile">
+            <span>{{ selectedFile.name }}</span>
+            <button class="delete-button" (click)="removeFile()">X</button>
+          </div>
+        <input type="file" style="display: none" (change)="onFileSelect($event)" accept=".pdf, .png, .jpeg" #hiddenfileinput>
     </div>
     <br>
     <button mat-raised-button color="warn" (click)="onAddClicked()">Krank melden</button>

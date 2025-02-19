@@ -35,14 +35,23 @@ export const MY_FORMATS = {
 export class NotificationOfIllnessRequestComponent{
   public startDate : moment.Moment = moment();
   public endDate : moment.Moment = moment();
-  public selectedFile: File;
+  public selectedFile: File | null = null;
+  private fileAsByte : number[] | null = null;
 
   constructor(private http : HttpNoiService, private ds : DialogService) {}
 
   onFileSelect(event : any) {
     this.selectedFile = event.target.files[0];
-
-    console.log(this.selectedFile.name);
+    if (this.selectedFile) {
+      // Datei als Byte-Array einlesen
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        const bytes = new Uint8Array(arrayBuffer);
+        this.fileAsByte = Array.from(bytes);
+      };
+      reader.readAsArrayBuffer(this.selectedFile);
+    }
   }
 
   async onAddClicked(){
@@ -55,11 +64,19 @@ export class NotificationOfIllnessRequestComponent{
 
     noi.startDate = noiSDate;
     noi.endDate = noiEDate;
+    noi.confirmationFile = this.fileAsByte;
     var confirm = await this.ds.showConfirmMessage("Möchten Sie sich wirklich von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " krank melden?");
     if(confirm){
       await this.http.addNotificationOfIllness(noi);
       this.ds.showNotificationMessage("Erfolgreich krank gemeldet!");
+      this.selectedFile = null;
+      this.fileAsByte = null;
     }
+  }
+
+  public removeFile(){
+    this.selectedFile = null;
+    this.fileAsByte = null;
   }
 
   public getDateAsString(date :  moment.Moment) : string{
@@ -68,5 +85,4 @@ export class NotificationOfIllnessRequestComponent{
     }
       return date.toDate().toLocaleDateString();
     }
-
 }

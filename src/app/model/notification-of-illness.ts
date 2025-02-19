@@ -5,5 +5,6 @@ export class NotificationOfIllness {
     public startDate : Date = new Date();
     public endDate : Date = new Date();
     public isConfirmed : boolean = false;
+    public confirmationFile : number[] | null = null;
     public employee : Employee = new Employee();
 }

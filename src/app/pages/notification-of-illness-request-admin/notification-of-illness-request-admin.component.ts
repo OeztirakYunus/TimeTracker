@@ -4,6 +4,7 @@ import { MAT_DATE_LOCALE, DateAdapter, MAT_DATE_FORMATS } from '@angular/materia
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NotificationOfIllness } from 'src/app/model/notification-of-illness';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { HttpNoiService } from 'src/app/services/http/noi/http-noi.service';
 
 export const MY_FORMATS = {
@@ -33,7 +34,7 @@ export class NotificationOfIllnessRequestAdminComponent {
   displayedColumns: string[] = ['nameOfEmployee', 'startDate', 'endDate', 'isConfirmed', 'actions'];
   dataSource = new MatTableDataSource([] as NotificationOfIllness[]);
 
-  constructor(private http : HttpNoiService) {}
+  constructor(private http : HttpNoiService, private ds : DialogService) {}
 
   async ngOnInit() {
     await this.getAll();
@@ -71,5 +72,41 @@ export class NotificationOfIllnessRequestAdminComponent {
   async deleteNoi(noi : NotificationOfIllness){
     await this.http.deleteNoi(noi);
     await this.getAll();
+  }
+
+  async downloadFile(noi : NotificationOfIllness){
+    if(noi.confirmationFile != null){
+      const byteCharacters = atob(noi.confirmationFile.toString());
+      var fileType = 'image/png';
+      var fileEnd = ".png";
+      if(byteCharacters.toLowerCase().includes("pdf")){
+        fileType = 'application/pdf';
+        fileEnd = ".pdf";
+      }else if(byteCharacters.toLowerCase().includes("png")){
+        fileType = 'image/png';
+        fileEnd = ".png";
+      }else if(byteCharacters.toLowerCase().includes("jpeg")){
+        fileType = 'image/jpeg';
+        fileEnd = ".jpeg";
+      }
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      // Blob für PNG erzeugen
+      const blob = new Blob([byteArray], { type: fileType });
+
+      // URL erstellen und zum Herunterladen nutzen
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Krankenstandsbestätigung_'+ noi.employee.lastName + "_" + noi.employee.firstName + fileEnd;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+    else{
+      this.ds.showErrorMessage("Keine Ärtzliche Bestätigung gefunden");
+    }
   }
 }

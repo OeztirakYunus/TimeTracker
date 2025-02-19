@@ -34,7 +34,10 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> Aktionen </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-mini-fab color="warn" (click)="deleteNoi(element)">
+            <button class="fileDownloadButton" mat-raised-button color="warn" (click)="downloadFile(element)">
+              Krankenstandsbestätigung herunterladen
+            </button>
+            <button class="deleteButton" mat-mini-fab color="warn" (click)="deleteNoi(element)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
