@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserToAdd } from 'src/app/model/user-to-add';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpEmployeeService } from 'src/app/services/http/employee/http-employee.service';
 
 @Component({
   selector: 'app-add-employee',
@@ -11,7 +11,7 @@ import { HttpService } from 'src/app/services/http/http.service';
 export class AddEmployeeComponent {
   data: UserToAdd = {firstName: "", lastName: "", email: "", password: "", phoneNumber: "", numberOfKids: 0, employeeRole: "User", socialSecurityNumber: ""}
 
-  constructor(private http : HttpService, private router : Router) {
+  constructor(private http : HttpEmployeeService, private router : Router) {
   }
 
   onAddClick(): void {

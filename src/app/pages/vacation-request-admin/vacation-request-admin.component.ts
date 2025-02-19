@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Vacation } from 'src/app/model/vacation';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpVacationService } from 'src/app/services/http/vacation/http-vacation.service';
 
 @Component({
   selector: 'app-vacation-request-admin',
@@ -16,7 +16,7 @@ export class VacationRequestAdminComponent implements OnInit {
   dataSourceInProgress = new MatTableDataSource([] as Vacation[]);
   dataSourceArchive = new MatTableDataSource([] as Vacation[]);
 
-  constructor(private http : HttpService) {    
+  constructor(private http : HttpVacationService) {    
   }
   async ngOnInit() {
     await this.getAllVacations();

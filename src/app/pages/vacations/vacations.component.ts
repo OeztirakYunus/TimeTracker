@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Vacation } from 'src/app/model/vacation';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpVacationService } from 'src/app/services/http/vacation/http-vacation.service';
 
 @Component({
   selector: 'app-vacations',
@@ -22,7 +22,7 @@ export class VacationsComponent implements OnInit {
   dataSourceInProgress = new MatTableDataSource([] as Vacation[]);
   dataSourceArchive = new MatTableDataSource([] as Vacation[]);
 
-  constructor(private http : HttpService) {    
+  constructor(private http : HttpVacationService) {    
   }
   async ngOnInit() {
     var vacations = await this.http.getVacations();

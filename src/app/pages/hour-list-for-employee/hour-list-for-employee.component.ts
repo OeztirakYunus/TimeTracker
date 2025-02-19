@@ -10,9 +10,13 @@ import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { HttpService } from 'src/app/services/http/http.service';
 import { AddStampComponent } from '../add-stamp/add-stamp.component';
 import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
+import { HttpWorkmonthService } from 'src/app/services/http/workmonth/http-workmonth.service';
+import { HttpEmployeeService } from 'src/app/services/http/employee/http-employee.service';
+import { HttpWorkdayService } from 'src/app/services/http/workday/http-workday.service';
+import { HttpStampService } from 'src/app/services/http/stamp/http-stamp.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -40,14 +44,14 @@ export class HourListForEmployeeComponent implements OnInit {
 
   private employeeId : string = "";
   public employee : Employee = new Employee();
-  constructor(private activatedroute:ActivatedRoute, private http : HttpService, private auth : AuthService, public router : Router, public dialog: MatDialog)
+  constructor(private activatedroute:ActivatedRoute, private httpWorkmonth : HttpWorkmonthService, private httpEmployee : HttpEmployeeService, private httpWorkday : HttpWorkdayService, private httpStamp : HttpStampService, public router : Router, private ds: DialogService)
   {
     this.employeeId = activatedroute.snapshot.params["id"];
     this.getWorkMonth();
   }
   
   async ngOnInit(){
-    this.employee = await this.http.getEmployeeById(this.employeeId);
+    this.employee = await this.httpEmployee.getEmployeeById(this.employeeId);
   }
 
   displayedColumnsDay: string[] = ['typeOfStamp', 'time'];
@@ -67,11 +71,11 @@ export class HourListForEmployeeComponent implements OnInit {
 
 
   async getAsPdf(){
-    await this.http.getAsPdf(this.workMonth, this.employeeId, this.pickedDate.toDate());
+    await this.httpWorkmonth.getAsPdf(this.workMonth, this.employee, this.pickedDate.toDate());
   }
 
   async getWorkMonth(){
-    this.workMonth = await this.http.getWorkMonthForEmployee(this.pickedDate.toDate(), this.employeeId);
+    this.workMonth = await this.httpWorkmonth.getWorkMonthForEmployee(this.pickedDate.toDate(), this.employeeId);
     var workDays = [] as WorkDay[];
     var day = undefined;
     if(this.workMonth.workDays.length > 0){
@@ -157,29 +161,29 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   async saveStamps(){
-    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich speichern?");
+    var confirmed = await this.ds.showConfirmMessage("Möchten Sie wirklich speichern?");
     if(confirmed){
       if(this.dataSourceDay.length > 0){
-        await this.http.updateStamps(this.dataSourceDay);
+        await this.httpStamp.updateStamps(this.dataSourceDay);
         await this.getWorkMonth();
-        this.showNotification("Daten wurden erfolgreich gespeichert!");
+        this.ds.showNotificationMessage("Daten wurden erfolgreich gespeichert!");
       }
       else{
-        this.showErrorMessage("Keine Daten zum Speichern vorhanden!");
+        this.ds.showErrorMessage("Keine Daten zum Speichern vorhanden!");
       }
     }
   }
 
   async deleteWorkDay(){
-    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich löschen?");
+    var confirmed = await this.ds.showConfirmMessage("Möchten Sie wirklich löschen?");
     if(confirmed){
       if(this.dataSourceDay.length > 0){
         var stamp : Stamp = this.dataSourceDay[0];
-        await this.http.deleteWorkDay(stamp.workDayId);
+        await this.httpWorkday.deleteWorkDay(stamp.workDayId);
         await this.getWorkMonth();
-        this.showNotification("Daten wurden erfolgreich gelöscht!");
+        this.ds.showNotificationMessage("Daten wurden erfolgreich gelöscht!");
       } else{
-        this.showErrorMessage("Keine Daten zum Löschen vorhanden!");
+        this.ds.showErrorMessage("Keine Daten zum Löschen vorhanden!");
       }
     }
   }
@@ -228,7 +232,7 @@ export class HourListForEmployeeComponent implements OnInit {
   }
 
   public async takeABreakManually() {
-    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich stempeln?");
+    var confirmed = await this.ds.showConfirmMessage("Möchten Sie wirklich stempeln?");
     if(confirmed){
       var day = this.pickedDate.toDate().getDate();
       var month = this.pickedDate.toDate().getMonth();
@@ -237,13 +241,13 @@ export class HourListForEmployeeComponent implements OnInit {
       date.setFullYear(year);
       date.setMonth(month);
       date.setDate(day);
-      await this.http.takeABreakManually(this.employeeId, date);
+      await this.httpStamp.takeABreakManually(this.employeeId, date);
       await this.getWorkMonth();
     }
   }
 
   public async stampManually(){
-    var confirmed = await this.showConfirmDialog("Möchten Sie wirklich stempeln?");
+    var confirmed = await this.ds.showConfirmMessage("Möchten Sie wirklich stempeln?");
     if(confirmed){
       var day = this.pickedDate.toDate().getDate();
       var month = this.pickedDate.toDate().getMonth();
@@ -252,7 +256,7 @@ export class HourListForEmployeeComponent implements OnInit {
       date.setFullYear(year);
       date.setMonth(month);
       date.setDate(day);
-      await this.http.stampManually(this.employeeId, date);
+      await this.httpStamp.stampManually(this.employeeId, date);
       await this.getWorkMonth();
     }
   }
@@ -279,43 +283,5 @@ export class HourListForEmployeeComponent implements OnInit {
     }
 
     return parseFloat(value.toFixed())
-  }
-
-  private showConfirmDialog(message: string): Promise<boolean> {
-    const dialogRef = this.dialog.open(MessageDialogComponent, {
-      height: 'fit',
-      width: 'fit',
-      data: { 
-        title: "Sind Sie sicher?", 
-        content: message, 
-        dialogType: DialogType.CONFIRM 
-      }
-    });
-  
-    return new Promise<boolean>((resolve) => {
-      dialogRef.afterClosed().subscribe(result => {
-        if (result === true) {
-          resolve(true);  // Benutzer hat bestätigt
-        } else {
-          resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
-        }
-      });
-    });
-  }  
-
-  private showErrorMessage(message: string){
-    this.dialog.open(MessageDialogComponent, {
-      height: 'fit',
-      width: 'fit',
-      data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
-    });
-  }
-
-  private showNotification(message : string){
-    this.dialog.open(MessageDialogComponent, {
-      height: 'fit',
-      width: 'fit',
-      data: {title: "Erfolgreich!", content: message, dialogType: DialogType.NOTIFICATION}
-    });
   }
 }

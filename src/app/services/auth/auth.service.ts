@@ -6,16 +6,16 @@ import { DialogType, MessageDialogComponent } from 'src/app/components/message-d
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from 'src/app/model/employee';
 import { LocalStorageCache } from '@auth0/auth0-angular';
+import { environment } from 'src/environments/environment';
+import { DialogService } from '../dialog/dialog.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  //private url : string = "http://217.154.74.86/api/Auth/";
-  private url = "https://localhost:5001/api/Auth/";
+  private url = environment.apiUrl + 'Auth/';
   public role = "";
-  constructor(private httpClient: HttpClient, private router: Router, private localStorageService: LocalStorageCache, private jwtService : JwtTokenService, private dialog: MatDialog) { }
+  constructor(private httpClient: HttpClient, private router: Router, private localStorageService: LocalStorageCache, private jwtService : JwtTokenService, private ds: DialogService) { }
 
   async login(email: string, password: string): Promise<boolean> {
     var path = 'login';
@@ -30,7 +30,7 @@ export class AuthService {
       this.localStorageService.set('UserRole', role);
       return true;
     } catch (error : any) {
-      this.showErrorMessage(error.error.message);
+      this.ds.showErrorMessage(error.message);
       return false;
     }
   }
@@ -43,7 +43,7 @@ export class AuthService {
       await this.httpClient.post<IAuthResponse>(this.url + path, user).toPromise();
       return true;
     } catch (error : any) {
-     this.showErrorMessage(error.error.message);
+     this.ds.showErrorMessage(error.error.message);
      return false;
     }
   }
@@ -53,7 +53,7 @@ export class AuthService {
       this.localStorageService.remove('AuthToken');
       this.localStorageService.remove('UserRole');
     } catch (error : any) {
-      this.showErrorMessage(error.error.message);
+      this.ds.showErrorMessage(error.error.message);
     }
   }
 
@@ -67,7 +67,7 @@ export class AuthService {
         var role = response === undefined ? "" : response.role;
         return role;
       } catch (error : any) {
-        this.showErrorMessage(error.error.message);
+        this.ds.showErrorMessage(error.error.message);
         return "";
       }
     }
@@ -84,7 +84,7 @@ export class AuthService {
       let employeeUn = await this.httpClient.get<Employee>(this.url + path, { headers }).toPromise();
       employee = employeeUn === undefined ? new Employee : employeeUn;
     } catch (error : any) {
-      this.showErrorMessage(error.error.message);
+      this.ds.showErrorMessage(error.error.message);
     }
     finally{
       return employee;
@@ -103,14 +103,6 @@ export class AuthService {
     }
 
     return isAuth;
-  }
-
-  private showErrorMessage(message: string){
-    this.dialog.open(MessageDialogComponent, {
-      height: 'fit',
-      width: 'fit',
-      data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
-    });
   }
 }
 

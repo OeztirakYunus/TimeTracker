@@ -6,7 +6,8 @@ import * as moment from 'moment';
 import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { NotificationOfIllness } from 'src/app/model/notification-of-illness';
 import { NotificationOfIllnessAdd } from 'src/app/model/notification-of-illness-add';
-import { HttpService } from 'src/app/services/http/http.service';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
+import { HttpNoiService } from 'src/app/services/http/noi/http-noi.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -36,7 +37,7 @@ export class NotificationOfIllnessRequestComponent{
   public endDate : moment.Moment = moment();
   public selectedFile: File;
 
-  constructor(private http : HttpService, private dialog : MatDialog) {}
+  constructor(private http : HttpNoiService, private ds : DialogService) {}
 
   onFileSelect(event : any) {
     this.selectedFile = event.target.files[0];
@@ -54,10 +55,10 @@ export class NotificationOfIllnessRequestComponent{
 
     noi.startDate = noiSDate;
     noi.endDate = noiEDate;
-    var confirm = await this.showConfirmDialog("Möchten Sie sich wirklich von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " krank melden?");
+    var confirm = await this.ds.showConfirmMessage("Möchten Sie sich wirklich von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " krank melden?");
     if(confirm){
       await this.http.addNotificationOfIllness(noi);
-      this.showNotification("Erfolgreich krank gemeldet!");
+      this.ds.showNotificationMessage("Erfolgreich krank gemeldet!");
     }
   }
 
@@ -68,41 +69,4 @@ export class NotificationOfIllnessRequestComponent{
       return date.toDate().toLocaleDateString();
     }
 
-  private showConfirmDialog(message: string): Promise<boolean> {
-        const dialogRef = this.dialog.open(MessageDialogComponent, {
-          height: 'fit',
-          width: 'fit',
-          data: { 
-            title: "Sind Sie sicher?", 
-            content: message, 
-            dialogType: DialogType.CONFIRM 
-          }
-        });
-      
-        return new Promise<boolean>((resolve) => {
-          dialogRef.afterClosed().subscribe(result => {
-            if (result === true) {
-              resolve(true);  // Benutzer hat bestätigt
-            } else {
-              resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
-            }
-          });
-        });
-      }  
-    
-      private showErrorMessage(message: string){
-        this.dialog.open(MessageDialogComponent, {
-          height: 'fit',
-          width: 'fit',
-          data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
-        });
-      }
-    
-      private showNotification(message : string){
-        this.dialog.open(MessageDialogComponent, {
-          height: 'fit',
-          width: 'fit',
-          data: {title: "Erfolgreich!", content: message, dialogType: DialogType.NOTIFICATION}
-        });
-      }
 }

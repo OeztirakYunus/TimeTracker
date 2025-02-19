@@ -14,3 +14,27 @@
     width: 40%;
     margin-right: 10px;
 }
+
+.container {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 30px;
+    border: 2px solid #f44336; /* Blaue Umrandung */
+    border-radius: 30px; /* Ovalform */
+    width: fit-content;
+    background-color: transparent;
+  }
+  
+  .download-text {
+    position: absolute;
+    top: -12px; /* Schiebt den Text über die Border */
+    background-color: #f44336; /* Hintergrundfarbe passend zur Umgebung */
+    padding: 2px 6px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+  }

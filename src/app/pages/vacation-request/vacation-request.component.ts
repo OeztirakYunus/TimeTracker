@@ -8,7 +8,8 @@ import { Employee } from 'src/app/model/employee';
 import { Vacation } from 'src/app/model/vacation';
 import { VacationAdd } from 'src/app/model/vacation-add';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { HttpService } from 'src/app/services/http/http.service';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
+import { HttpVacationService } from 'src/app/services/http/vacation/http-vacation.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -37,7 +38,7 @@ export class VacationRequestComponent implements OnInit{
   public endDate : moment.Moment = moment();
   public nameOfEmployee = "";
 
-  constructor(private http : HttpService, private auth : AuthService, private dialog : MatDialog) {
+  constructor(private http : HttpVacationService, private auth : AuthService, private ds : DialogService) {
   }
   async ngOnInit() {
     var user = await this.auth.getLoggedInUser();
@@ -72,48 +73,10 @@ export class VacationRequestComponent implements OnInit{
 
     vacation.startDate = vsDate;
     vacation.endDate = veDate;
-    var confirm = await this.showConfirmDialog("Möchten Sie wirklich Urlaub von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " beantragen?");
+    var confirm = await this.ds.showConfirmMessage("Möchten Sie wirklich Urlaub von " + this.getDateAsString(this.startDate) + " bis " + this.getDateAsString(this.endDate) + " beantragen?");
     if(confirm){
       await this.http.addVacation(vacation);
-      this.showNotification("Urlaub erfolgreich beantragt!");
+      this.ds.showNotificationMessage("Urlaub erfolgreich beantragt!");
     }
   }
-
-  private showConfirmDialog(message: string): Promise<boolean> {
-      const dialogRef = this.dialog.open(MessageDialogComponent, {
-        height: 'fit',
-        width: 'fit',
-        data: { 
-          title: "Sind Sie sicher?", 
-          content: message, 
-          dialogType: DialogType.CONFIRM 
-        }
-      });
-    
-      return new Promise<boolean>((resolve) => {
-        dialogRef.afterClosed().subscribe(result => {
-          if (result === true) {
-            resolve(true);  // Benutzer hat bestätigt
-          } else {
-            resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
-          }
-        });
-      });
-    }  
-  
-    private showErrorMessage(message: string){
-      this.dialog.open(MessageDialogComponent, {
-        height: 'fit',
-        width: 'fit',
-        data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
-      });
-    }
-  
-    private showNotification(message : string){
-      this.dialog.open(MessageDialogComponent, {
-        height: 'fit',
-        width: 'fit',
-        data: {title: "Erfolgreich!", content: message, dialogType: DialogType.NOTIFICATION}
-      });
-    }
 }

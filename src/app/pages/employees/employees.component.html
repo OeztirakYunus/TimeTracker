@@ -10,6 +10,18 @@
         <mat-icon>add</mat-icon>
     </button>
 
+    <div class="container">
+
+  <span class="download-text">Herunterladen</span>
+      <mat-form-field color="warn">
+        <mat-label>Datum auswählen</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="pickedDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+      </mat-form-field>
+      <button class="downloadButton" mat-raised-button color="warn" (click)="getAllAsPdf()">Alle Stundenzettel für alle Mitarbeiter downloaden</button>
+    </div>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->

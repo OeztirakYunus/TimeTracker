@@ -4,10 +4,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
 import { WorkMonth } from 'src/app/model/work-month';
-import { HttpService } from 'src/app/services/http/http.service';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import * as moment from 'moment';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { HttpWorkmonthService } from 'src/app/services/http/workmonth/http-workmonth.service';
 
 
 export const MY_FORMATS = {
@@ -47,13 +47,13 @@ export class HourListComponent {
   public vacationDay = false;
   public illDay = false;
 
-  constructor(private http : HttpService, private auth : AuthService){
+  constructor(private http : HttpWorkmonthService, private auth : AuthService){
     this.getWorkMonth();
   }
 
   async getAsPdf(){
     var loggedInUser = await this.auth.getLoggedInUser();
-    await this.http.getAsPdf(this.workMonth, loggedInUser.id, this.pickedDate.toDate());
+    await this.http.getAsPdf(this.workMonth, loggedInUser, this.pickedDate.toDate());
   }
 
   async getWorkMonth(){

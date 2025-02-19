@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpCompanyService } from 'src/app/services/http/company/http-company.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,7 +11,7 @@ export class NavbarComponent {
 
   userIsAdmin : boolean = false;
   companyName : String = "";
-  public constructor(public auth : AuthService, public http: HttpService)
+  public constructor(public auth : AuthService, public http: HttpCompanyService)
   {
     this.getCompanyName();
   }

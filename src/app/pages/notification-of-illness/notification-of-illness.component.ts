@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { NotificationOfIllness } from 'src/app/model/notification-of-illness';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpNoiService } from 'src/app/services/http/noi/http-noi.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -36,7 +36,7 @@ export class NotificationOfIllnessComponent implements OnInit {
   dataSource = new MatTableDataSource([] as NotificationOfIllness[]);
   dataSourceArchive = new MatTableDataSource([] as NotificationOfIllness[]);
 
-  constructor(private http : HttpService) {}
+  constructor(private http : HttpNoiService) {}
 
   async ngOnInit() {
     var nois = await this.http.getNotificationOfIllnesses();

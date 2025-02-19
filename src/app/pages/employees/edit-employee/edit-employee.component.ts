@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Employee } from 'src/app/model/employee';
 import { EmployeeEdit } from 'src/app/model/employee-edit';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HttpEmployeeService } from 'src/app/services/http/employee/http-employee.service';
 
 @Component({
   selector: 'app-edit-employee',
@@ -13,7 +13,7 @@ export class EditEmployeeComponent{
   
   employee : EmployeeEdit = new EmployeeEdit();
 
-  constructor(private activatedroute:ActivatedRoute, private http : HttpService)
+  constructor(private activatedroute:ActivatedRoute, private http : HttpEmployeeService)
   {
     var employeeId = activatedroute.snapshot.params["id"];
     this.getEmployee(employeeId);

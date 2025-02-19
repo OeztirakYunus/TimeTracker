@@ -13,7 +13,6 @@ import { HourListComponent } from './pages/hour-list/hour-list.component';
 import { EmployeesComponent } from './pages/employees/employees.component';
 
 import { HttpClientModule } from '@angular/common/http';
-import { HttpService } from './services/http/http.service';
 import { JwtTokenService } from './services/jwt/jwt-token.service';
 import { AuthService } from './services/auth/auth.service';
 import { LoginComponent } from './pages/login/login.component';
@@ -32,6 +31,14 @@ import { NotificationOfIllnessRequestComponent } from './pages/notification-of-i
 import { NotificationOfIllnessRequestAdminComponent } from './pages/notification-of-illness-request-admin/notification-of-illness-request-admin.component';
 import { AddStampComponent } from './pages/add-stamp/add-stamp.component';
 import { LocalStorageCache } from '@auth0/auth0-angular';
+import { DialogService } from './services/dialog/dialog.service';
+import { HttpCompanyService } from './services/http/company/http-company.service';
+import { HttpEmployeeService } from './services/http/employee/http-employee.service';
+import { HttpNoiService } from './services/http/noi/http-noi.service';
+import { HttpStampService } from './services/http/stamp/http-stamp.service';
+import { HttpVacationService } from './services/http/vacation/http-vacation.service';
+import { HttpWorkdayService } from './services/http/workday/http-workday.service';
+import { HttpWorkmonthService } from './services/http/workmonth/http-workmonth.service';
 
 
 @NgModule({
@@ -53,8 +60,7 @@ import { LocalStorageCache } from '@auth0/auth0-angular';
     NotificationOfIllnessComponent,
     NotificationOfIllnessRequestComponent,
     NotificationOfIllnessRequestAdminComponent,
-    AddStampComponent
-    
+    AddStampComponent    
   ],
   imports: [
     BrowserModule,
@@ -67,7 +73,7 @@ import { LocalStorageCache } from '@auth0/auth0-angular';
     HttpClientModule,
     NgxMaterialTimepickerModule
   ],
-  providers: [HttpService, JwtTokenService, AuthService, MessageDialogComponent, LocalStorageCache],
+  providers: [JwtTokenService, AuthService, DialogService, LocalStorageCache, HttpCompanyService, HttpEmployeeService, HttpNoiService, HttpStampService, HttpVacationService, HttpWorkdayService, HttpWorkmonthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

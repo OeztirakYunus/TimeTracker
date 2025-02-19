@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { HttpService } from '../../services/http/http.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,17 +10,40 @@ import { Router } from '@angular/router';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
+import * as moment from 'moment';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { HttpEmployeeService } from 'src/app/services/http/employee/http-employee.service';
+import { HttpWorkmonthService } from 'src/app/services/http/workmonth/http-workmonth.service';
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
-  styleUrls: ['./employees.component.css']
+  styleUrls: ['./employees.component.css'],
+  providers: [
+      { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
+      {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+      {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+    ]
 })
 export class EmployeesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'employeeRole', 'actions'];
   dataSource = new MatTableDataSource([] as Employee[]);
+  pickedDate : moment.Moment = moment();
 
-  constructor(private httpService : HttpService, public dialog : MatDialog, public router : Router){}
+  constructor(private httpEmployee : HttpEmployeeService, private httpWorkMonth : HttpWorkmonthService, public dialog : MatDialog, public router : Router){}
   
   async ngOnInit(){
     await this.getEmployees();
@@ -32,8 +54,12 @@ export class EmployeesComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  async getAllAsPdf(){
+    await this.httpWorkMonth.getAllAsPdf(this.pickedDate.toDate());
+  }
+
   async getEmployees(){
-    var data = await this.httpService.getEmployees();
+    var data = await this.httpEmployee.getEmployees();
     this.dataSource = new MatTableDataSource(data);
   }
 
@@ -42,7 +68,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   async deleteEmployee(employee : Employee){
-    await this.httpService.deleteEmployee(employee);
+    await this.httpEmployee.deleteEmployee(employee);
     await this.getEmployees();
   }
 
@@ -77,7 +103,7 @@ export class EmployeesComponent implements OnInit {
 export class DetailEmployeeDialog {
   employee : Employee;
   constructor(
-    public dialogRef: MatDialogRef<DetailEmployeeDialog>, private http: HttpService, @Inject(MAT_DIALOG_DATA) data : Employee
+    public dialogRef: MatDialogRef<DetailEmployeeDialog>, private http: HttpEmployeeService, @Inject(MAT_DIALOG_DATA) data : Employee
   )
   {
     this.employee = data;

@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogType, MessageDialogComponent } from 'src/app/components/message-dialog/message-dialog.component';
 import { Stamp } from 'src/app/model/stamp';
 import { WorkDay } from 'src/app/model/work-day';
-import { HttpService } from 'src/app/services/http/http.service';
+import { DialogService } from 'src/app/services/dialog/dialog.service';
+import { HttpStampService } from 'src/app/services/http/stamp/http-stamp.service';
+import { HttpWorkdayService } from 'src/app/services/http/workday/http-workday.service';
 
 const daysInGerman = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
@@ -24,7 +26,7 @@ export class StampTimeComponent implements OnInit {
   public illDay = false;
   private clockElement: HTMLElement;
 
-  constructor(private http : HttpService, private dialog : MatDialog){
+  constructor(private httpStamp : HttpStampService, private httpWorkday : HttpWorkdayService, private ds : DialogService){
   }
   
   async ngOnInit() {
@@ -64,9 +66,9 @@ export class StampTimeComponent implements OnInit {
     if(this.breakButtonText == "Pause"){
       confirmText = "Möchten Sie die Pause beginnen?";
     }
-    var confirm = await this.showConfirmDialog(confirmText);
+    var confirm = await this.ds.showConfirmMessage(confirmText);
     if(confirm){
-      await this.http.takeABreak();
+      await this.httpStamp.takeABreak();
       await this.getWorkDay();
     }
   }
@@ -76,16 +78,16 @@ export class StampTimeComponent implements OnInit {
     if(this.stampButtonText == "Dienstbeginn"){
       confirmText = "Möchten Sie den Dienst starten?";
     }
-    var confirm = await this.showConfirmDialog(confirmText);
+    var confirm = await this.ds.showConfirmMessage(confirmText);
 
     if(confirm){
-      await this.http.stamp();
+      await this.httpStamp.stamp();
       await this.getWorkDay();
     }
   }
 
   private async getWorkDay() {
-    this.workDay = await this.http.getWorkDay();
+    this.workDay = await this.httpWorkday.getWorkDay();
     this.dataSource = this.workDay.stamps;
     if(this.dataSource.some(i => i.typeOfStamp === "Dienstbeginn")){
       this.stampButtonText = "Dienstende";
@@ -143,34 +145,4 @@ export class StampTimeComponent implements OnInit {
       this.updateClock(); // Initialer Aufruf
       setInterval(() => this.updateClock(), 1000);
   }
-
-    private showConfirmDialog(message: string): Promise<boolean> {
-      const dialogRef = this.dialog.open(MessageDialogComponent, {
-        height: 'fit',
-        width: 'fit',
-        data: { 
-          title: "Sind Sie sicher?", 
-          content: message, 
-          dialogType: DialogType.CONFIRM 
-        }
-      });
-    
-      return new Promise<boolean>((resolve) => {
-        dialogRef.afterClosed().subscribe(result => {
-          if (result === true) {
-            resolve(true);  // Benutzer hat bestätigt
-          } else {
-            resolve(false); // Benutzer hat abgebrochen oder Dialog geschlossen
-          }
-        });
-      });
-    }  
-  
-    private showErrorMessage(message: string){
-      this.dialog.open(MessageDialogComponent, {
-        height: 'fit',
-        width: 'fit',
-        data: {title: "Ein Fehler ist aufgetreten!", content: message, dialogType: DialogType.ERROR}
-      });
-    }
 }
